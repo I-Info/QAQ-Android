@@ -4,6 +4,6 @@
     <string name="server_port">Port</string>
     <string name="config_server_info">Config server info:</string>
     <string name="config_user_info">Config user info:</string>
-    <string name="user_name">User name</string>
-    <string name="submit">submit</string>
+    <string name="user_name">Username</string>
+    <string name="submit">Submit</string>
 </resources>
