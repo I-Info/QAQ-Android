@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QAQ</string>
-    <string name="server_name">服务器地址</string>
+    <string name="server_IP">服务器IP地址</string>
     <string name="server_port">端口</string>
     <string name="config_server_info">服务器信息：</string>
     <string name="config_user_info">用户信息：</string>

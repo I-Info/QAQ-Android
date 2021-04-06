@@ -7,37 +7,21 @@
     tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/serverName"
+        android:id="@+id/serverIp"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/server_name"
+        android:hint="@string/server_IP"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/serverPort"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <EditText
-        android:id="@+id/serverPort"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="16dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/server_port"
-        android:inputType="numberSigned"
-        app:layout_constraintBaseline_toBaselineOf="@+id/serverName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/serverName" />
 
     <TextView
         android:id="@+id/textView"
@@ -74,7 +58,7 @@
         android:text="@string/config_user_info"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serverName" />
+        app:layout_constraintTop_toBottomOf="@+id/serverIp" />
 
     <Button
         android:id="@+id/button"
@@ -86,4 +70,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+    <EditText
+        android:id="@+id/serverPort"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/server_port"
+        android:inputType="number"
+        app:layout_constraintBaseline_toBaselineOf="@+id/serverIp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/serverIp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
