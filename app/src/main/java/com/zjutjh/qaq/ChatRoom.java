@@ -15,11 +15,18 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
 
+
         Intent intent = getIntent();
         serverIp = intent.getStringExtra(MainActivity.EXTRA_SERVER_IP);
         serverPort = intent.getIntExtra(MainActivity.EXTRA_SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.EXTRA_USERNAME);
 
+    }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }
