@@ -2,6 +2,7 @@ package com.zjutjh.qaq;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -9,6 +10,9 @@ import android.widget.EditText;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_SERVER_IP = "com.zjutjh.qaq.SERVER_IP";
+    public static final String EXTRA_SERVER_PORT = "com.zjutjh.qaq.SERVER_PORT";
+    public static final String EXTRA_USERNAME = "com.zjutjh.qaq.USERNAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(regExp);
         if (!pattern.matcher(serverIp).matches()) {
             textServerIp.setError("Invalid IP address");
+            return;
         }
+
+
+        Intent intent = new Intent(this, ChatRoom.class);
 
 
     }
