@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         String serverIp = textServerIp.getText().toString();
         String portString = textServerPort.getText().toString();
-        String userName = textUsername.getText().toString();
+        String username = textUsername.getText().toString();
 
         if (serverIp.equals("")) {
             textServerIp.setError("Please input server IP address");
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (userName.equals("") || userName.length() > 10) {
+        if (username.equals("") || username.length() > 10) {
             textUsername.setError("Invalid username");
         }
 
@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this, ChatRoom.class);
+        intent.putExtra(EXTRA_SERVER_IP, serverIp);
+        intent.putExtra(EXTRA_SERVER_PORT, serverPort);
+        intent.putExtra(EXTRA_USERNAME, username);
+
+        startActivity(intent);
 
 
     }

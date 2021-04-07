@@ -19,20 +19,29 @@
             android:id="@+id/messageLine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/message_input"
             android:inputType="textPersonName" />
 
-        <ImageButton
+        <Button
             android:id="@+id/sendButton"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
             android:layout_weight="1"
-            android:background="@color/cardview_shadow_end_color"
-            android:contentDescription="@string/send_button"
-            app:srcCompat="@android:drawable/ic_menu_send" />
+            android:backgroundTint="#EDF5FB"
+            android:textAlignment="center"
+            android:translationX="-3dp"
+            app:cornerRadius="5dp"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
+            app:iconTint="#4FC3F7"
+            app:rippleColor="#E0F2F1" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
