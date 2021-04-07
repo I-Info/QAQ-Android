@@ -13,4 +13,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="RippleWhite">
+        <item name="android:colorControlHighlight">#AEAEAE</item>
+        <item name="android:radius">20dp</item>
+    </style>
 </resources>
