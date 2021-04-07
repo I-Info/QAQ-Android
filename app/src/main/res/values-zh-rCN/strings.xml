@@ -7,4 +7,6 @@
     <string name="config_user_info">用户信息：</string>
     <string name="user_name">用户名</string>
     <string name="submit">确定</string>
+    <string name="message_input">信息</string>
+    <string name="send_button">发送</string>
 </resources>
