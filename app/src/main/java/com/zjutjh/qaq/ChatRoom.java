@@ -3,6 +3,8 @@ package com.zjutjh.qaq;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +35,8 @@ public class ChatRoom extends AppCompatActivity {
     private BufferedReader bufferedReader = null;
     private OutputStream outputStream = null;
 
+    RecyclerView messageBox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,10 @@ public class ChatRoom extends AppCompatActivity {
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.USERNAME);
 
+        //设置message box
+        messageBox = (RecyclerView)findViewById(R.id.messageBox);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        messageBox.setLayoutManager(layoutManager);
 
 
         /*主socket接收线程*/
@@ -117,7 +125,10 @@ public class ChatRoom extends AppCompatActivity {
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
                     //发送获取的新消息到UI线程..
-//                    System.out.println(msg);
+                    runOnUiThread(()->{
+
+                    });
+
 
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                     ArrayList<String> users = new ArrayList<String>(), dates = new ArrayList<String>(), msgs = new ArrayList<String>();
@@ -129,14 +140,13 @@ public class ChatRoom extends AppCompatActivity {
 
                     //发送历史消息到UI线程...
 
+
                 }
             }
 
         };
-        /*End of Runnable*/
-//        new Thread(socketThread).start();
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.hide();
+        new Thread(socketThread).start();
+
     }
 
 
@@ -168,8 +178,12 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return super.onSupportNavigateUp();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //重写返回按钮
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
     }
 }

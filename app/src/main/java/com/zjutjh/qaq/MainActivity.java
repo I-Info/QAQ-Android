@@ -33,23 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             textServerIp.setText(savedInstanceState.getString(SERVER_IP));
-            textServerPort.setText(savedInstanceState.getString(SERVER_PORT));
+            textServerPort.setText(savedInstanceState.getInt(SERVER_PORT));
             textUsername.setText(savedInstanceState.getString(USERNAME));
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (serverIp != null) {
-            textServerIp.setText(serverIp);
-            textServerPort.setText(serverPort);
-            textUsername.setText(username);
-        }
-    }
 
     public void onSubmit(View view) {
-
 
         serverIp = textServerIp.getText().toString();
         String portString = textServerPort.getText().toString();
