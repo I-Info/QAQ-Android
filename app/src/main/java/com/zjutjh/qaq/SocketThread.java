@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
 import androidx.collection.ArraySet;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ import java.util.Objects;
 public class SocketThread implements Runnable {
     private Socket socket;
     private Handler uiHandler;
-    private Handler revHandler;
+    private static Handler revHandler;
 
     private BufferedReader bufferedReader = null;
     private OutputStream outputStream = null;
@@ -74,6 +75,7 @@ public class SocketThread implements Runnable {
                                         messageHandler(packageMessage.toString());
                                         packageMessage = new StringBuilder();
 
+
                                     } else if (startFlag) {
                                         //正常情况将字符添加到message
                                         packageMessage.append(content.charAt(index));
@@ -104,7 +106,7 @@ public class SocketThread implements Runnable {
                         Message message = Message.obtain();
                         message.what = 0x1;
                         message.setData(bundle);
-                        uiHandler.handleMessage(message);
+                        uiHandler.sendMessage(message);
                     } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                         ArrayList<String> users = new ArrayList<String>(), dates = new ArrayList<String>(), msgs = new ArrayList<String>();
                         for (int index = 1; index < messageArray.length; index += 3) {
@@ -119,11 +121,13 @@ public class SocketThread implements Runnable {
                         bundle.putStringArrayList("messages",msgs);
                         Message message = Message.obtain();
                         message.setData(bundle);
-                        uiHandler.handleMessage(message);
+                        uiHandler.sendMessage(message);
                     }
 
                 }
             }.start();
+
+
 
         } catch (
                 SocketTimeoutException exception) {
