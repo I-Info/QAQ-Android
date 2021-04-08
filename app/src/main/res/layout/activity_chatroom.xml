@@ -35,6 +35,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/send_button"
+            android:onClick="sendMessage"
             android:theme="@style/RippleWhite"
             android:tint="#81D4FA"
             android:translationX="-3dp"

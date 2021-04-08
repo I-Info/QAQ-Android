@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 
@@ -19,6 +17,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import static java.lang.Thread.sleep;
 
 public class ChatRoom extends AppCompatActivity {
     String serverIp;
@@ -41,65 +41,70 @@ public class ChatRoom extends AppCompatActivity {
         serverPort = intent.getIntExtra(MainActivity.EXTRA_SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.EXTRA_USERNAME);
 
-        //Socket连接线程
-        new Thread(() -> {
-            try {
-                socket = new Socket(serverIp, serverPort);
-                bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                outputStream = socket.getOutputStream();
-                outputStream.write(("{user&;named&;" + username + "}").getBytes(StandardCharsets.UTF_8));
-                outputStream.flush();
-                outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }).start();
+
 
         /*主socket接收线程*/
         Runnable socketThread = new Runnable() {
             @Override
             public void run() {
-                char[] contentChar = new char[1024];
-                String content;
-                StringBuilder packageMessage = new StringBuilder();
-                boolean startFlag = false;
                 try {
-                    while (bufferedReader.read(contentChar) != -1) {
-                        content = String.valueOf(contentChar);
-                        //解包循环，逐字符处理
-                        for (int index = 0; index < content.length(); index++) {
-                            try {
-                                if (content.charAt(index) == '{') {
-                                    if (startFlag) {
-                                        //异常情况，丢弃之前的message，抛出错误
-                                        packageMessage = new StringBuilder();
-                                        throw new Exception("message without '}' endpoint");
-                                    } else {
-                                        //message开始
-                                        startFlag = true;
-                                    }
-                                } else if (content.charAt(index) == '}' && startFlag) {
-                                    //message结束
-                                    startFlag = false;
-                                    messageHandler(packageMessage.toString());
-                                    packageMessage = new StringBuilder();
-
-
-                                } else if (startFlag) {
-                                    //正常情况将字符添加到message
-                                    packageMessage.append(content.charAt(index));
-                                }
-
-                            } catch (Exception exception) {
-                                System.out.println(exception.getMessage());
-                            }
-                        }
-
+                    socket = new Socket(serverIp, serverPort);
+                    if (!socket.isConnected()) {
+                        throw new Exception("Connection time out.");
                     }
-                } catch (
-                        IOException exception) {
+
+                    bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    outputStream = socket.getOutputStream();
+                    outputStream.write(("{user&;named&;" + username + "}").getBytes(StandardCharsets.UTF_8));
+                    outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
+                    outputStream.flush();
+
+                    char[] contentChar = new char[1024];
+                    String content;
+                    StringBuilder packageMessage = new StringBuilder();
+                    boolean startFlag = false;
+                    try {
+                        while (bufferedReader.read(contentChar) != -1) {
+                            content = String.valueOf(contentChar);
+                            //解包循环，逐字符处理
+                            for (int index = 0; index < content.length(); index++) {
+                                try {
+                                    if (content.charAt(index) == '{') {
+                                        if (startFlag) {
+                                            //异常情况，丢弃之前的message，抛出错误
+                                            packageMessage = new StringBuilder();
+                                            throw new Exception("message without '}' endpoint");
+                                        } else {
+                                            //message开始
+                                            startFlag = true;
+                                        }
+                                    } else if (content.charAt(index) == '}' && startFlag) {
+                                        //message结束
+                                        startFlag = false;
+                                        messageHandler(packageMessage.toString());
+                                        packageMessage = new StringBuilder();
+
+
+                                    } else if (startFlag) {
+                                        //正常情况将字符添加到message
+                                        packageMessage.append(content.charAt(index));
+                                    }
+
+                                } catch (Exception exception) {
+                                    System.out.println(exception.getMessage());
+                                }
+                            }
+
+                        }
+                    } catch (
+                            IOException exception) {
+                        exception.printStackTrace();
+                    }
+
+                } catch (Exception exception) {
                     exception.printStackTrace();
                 }
+
             }
 
             private void messageHandler(@NotNull String rawMessage) {
@@ -112,10 +117,7 @@ public class ChatRoom extends AppCompatActivity {
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
                     //发送获取的新消息到UI线程..
-                    runOnUiThread(() -> {
-
-
-                    });
+//                    System.out.println(msg);
 
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                     ArrayList<String> users = new ArrayList<String>(), dates = new ArrayList<String>(), msgs = new ArrayList<String>();
@@ -126,9 +128,7 @@ public class ChatRoom extends AppCompatActivity {
                     }
 
                     //发送历史消息到UI线程...
-                    runOnUiThread(() -> {
 
-                    });
                 }
             }
 
@@ -149,8 +149,10 @@ public class ChatRoom extends AppCompatActivity {
     //发送按钮方法
     public void sendMessage(View view) {
         if (socket.isConnected()) {
+            EditText messageLine = (EditText) findViewById(R.id.messageLine);
             StringBuilder msgBil = new StringBuilder();
-            String msg = ((EditText) findViewById(R.id.messageLine)).getText().toString();
+            String msg = messageLine.getText().toString();
+            messageLine.setText("");
             msgBil.append("{msg&;send&;");
             msgBil.append(msg);
             msgBil.append('}');
