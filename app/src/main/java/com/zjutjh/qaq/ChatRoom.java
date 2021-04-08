@@ -1,11 +1,15 @@
 package com.zjutjh.qaq;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toolbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -37,9 +40,9 @@ public class ChatRoom extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        serverIp = intent.getStringExtra(MainActivity.EXTRA_SERVER_IP);
-        serverPort = intent.getIntExtra(MainActivity.EXTRA_SERVER_PORT, 8080);
-        username = intent.getStringExtra(MainActivity.EXTRA_USERNAME);
+        serverIp = intent.getStringExtra(MainActivity.SERVER_IP);
+        serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
+        username = intent.getStringExtra(MainActivity.USERNAME);
 
 
 
@@ -49,9 +52,6 @@ public class ChatRoom extends AppCompatActivity {
             public void run() {
                 try {
                     socket = new Socket(serverIp, serverPort);
-                    if (!socket.isConnected()) {
-                        throw new Exception("Connection time out.");
-                    }
 
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     outputStream = socket.getOutputStream();
@@ -134,9 +134,9 @@ public class ChatRoom extends AppCompatActivity {
 
         };
         /*End of Runnable*/
-        new Thread(socketThread).start();
-
-
+//        new Thread(socketThread).start();
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
     }
 
 
@@ -148,7 +148,7 @@ public class ChatRoom extends AppCompatActivity {
 
     //发送按钮方法
     public void sendMessage(View view) {
-        if (socket.isConnected()) {
+        if (socket != null) {
             EditText messageLine = (EditText) findViewById(R.id.messageLine);
             StringBuilder msgBil = new StringBuilder();
             String msg = messageLine.getText().toString();
@@ -165,5 +165,11 @@ public class ChatRoom extends AppCompatActivity {
                 }
             }).start();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }
