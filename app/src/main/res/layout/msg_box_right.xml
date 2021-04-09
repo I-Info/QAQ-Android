@@ -36,11 +36,12 @@
         android:id="@+id/text_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_weight="1"
-        android:gravity="start"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
         android:text="time"
-        android:textColor="@color/gray" />
+        android:textColor="@color/gray"
+        android:textSize="12sp" />
 
 </LinearLayout>
 

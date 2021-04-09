@@ -51,8 +51,6 @@ public class ChatRoom extends AppCompatActivity {
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.USERNAME);
 
-        //设置message box
-
 
     }
 
@@ -82,10 +80,9 @@ public class ChatRoom extends AppCompatActivity {
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
 
+                    //设置message box
                     messageBox = findViewById(R.id.messageBox);
-
                     messageBox.setLayoutManager(layoutManager);
-
                     messageAdapter = new MessageAdapter(qMessageList);
                     messageBox.setAdapter(messageAdapter);
 
@@ -185,7 +182,10 @@ public class ChatRoom extends AppCompatActivity {
         if (socket != null) {
             EditText messageLine = (EditText) findViewById(R.id.messageLine);
             StringBuilder msgBil = new StringBuilder();
-            String msg = messageLine.getText().toString();
+            String msg = messageLine.getText().toString().trim();
+            if (msg.isEmpty()) {
+                return;
+            }
             messageLine.setText("");
             msgBil.append("{msg&;send&;");
             msgBil.append(msg);
@@ -196,10 +196,12 @@ public class ChatRoom extends AppCompatActivity {
                     outputStream.write(msgBil.toString().getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
                 } catch (IOException exception) {
+                    //发送失败，说明已断开连接
                     exception.printStackTrace();
+                    finish();
                 }
             }).start();
-            QMessage qMessage = new QMessage(username, "2020", msg, QMessage.TYPE_RIGHT);
+            QMessage qMessage = new QMessage("", "", msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
             messageBox.scrollToPosition(qMessageList.size() - 1);
@@ -217,5 +219,11 @@ public class ChatRoom extends AppCompatActivity {
         return false;
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (messageBox != null) {
+            messageBox.scrollToPosition(qMessageList.size() - 1);
+        }
+    }
 }
