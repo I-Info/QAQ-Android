@@ -54,7 +54,7 @@ public class ChatRoom extends AppCompatActivity {
         username = intent.getStringExtra(MainActivity.USERNAME);
 
         //设置message box
-        messageBox = (RecyclerView)findViewById(R.id.messageBox);
+        messageBox = findViewById(R.id.messageBox);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         messageBox.setLayoutManager(layoutManager);
 
@@ -136,6 +136,7 @@ public class ChatRoom extends AppCompatActivity {
 
                     //发送获取的新消息到UI线程..
                     runOnUiThread(()->{
+
 
                     });
 

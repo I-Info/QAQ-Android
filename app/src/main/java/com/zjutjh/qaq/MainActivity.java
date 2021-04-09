@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setEnterTransition(slideIn);
         getWindow().setExitTransition(slideOut);
 
-        textServerIp = (EditText) findViewById(R.id.serverIp);
-        textServerPort = (EditText) findViewById(R.id.serverPort);
-        textUsername = (EditText) findViewById(R.id.username);
+        textServerIp = findViewById(R.id.serverIp);
+        textServerPort = findViewById(R.id.serverPort);
+        textUsername = findViewById(R.id.username);
 
         if (savedInstanceState != null) {
             textServerIp.setText(savedInstanceState.getString(SERVER_IP));
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(USERNAME, username);
 
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
     }
 
