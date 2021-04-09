@@ -47,7 +47,6 @@ public class ChatRoom extends AppCompatActivity {
         setContentView(R.layout.activity_chatroom);
 
 
-
         Intent intent = getIntent();
         serverIp = intent.getStringExtra(MainActivity.SERVER_IP);
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
@@ -65,7 +64,7 @@ public class ChatRoom extends AppCompatActivity {
             public void run() {
                 try {
                     socket = new Socket();
-                    socket.connect(new InetSocketAddress(serverIp,serverPort), 3000);
+                    socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
 
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     outputStream = socket.getOutputStream();
@@ -118,7 +117,7 @@ public class ChatRoom extends AppCompatActivity {
 
                 } catch (Exception exception) {
                     exception.printStackTrace();
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
                         finish();
                     });
                 }
@@ -135,7 +134,7 @@ public class ChatRoom extends AppCompatActivity {
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
                     //发送获取的新消息到UI线程..
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
 
 
                     });
