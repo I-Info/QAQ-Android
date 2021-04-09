@@ -6,6 +6,6 @@
     <string name="config_user_info">Config user info:</string>
     <string name="user_name">Username</string>
     <string name="submit">Submit</string>
-    <string name="message_input">Input message</string>
+    <string name="message_input">Input QMessage</string>
     <string name="send_button">send</string>
 </resources>

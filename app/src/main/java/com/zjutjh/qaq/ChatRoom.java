@@ -1,19 +1,15 @@
 package com.zjutjh.qaq;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toolbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,11 +19,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
-import static java.lang.Thread.sleep;
 
 public class ChatRoom extends AppCompatActivity {
     String serverIp;
@@ -38,6 +33,9 @@ public class ChatRoom extends AppCompatActivity {
 
     private BufferedReader bufferedReader = null;
     private OutputStream outputStream = null;
+
+    private List<QMessage> qMessageList = new ArrayList<>();
+    private MessageAdapter messageAdapter;
 
     RecyclerView messageBox;
 
@@ -56,6 +54,8 @@ public class ChatRoom extends AppCompatActivity {
         messageBox = findViewById(R.id.messageBox);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         messageBox.setLayoutManager(layoutManager);
+        messageAdapter = new MessageAdapter(qMessageList);
+        messageBox.setAdapter(messageAdapter);
 
 
 
@@ -119,6 +119,7 @@ public class ChatRoom extends AppCompatActivity {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     runOnUiThread(() -> {
+//                        Toast.makeText();
                         finish();
                     });
                 }
@@ -129,27 +130,24 @@ public class ChatRoom extends AppCompatActivity {
                 //处理已经解包后的接收到的消息
                 String[] messageArray = rawMessage.split("&;+");
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
-                    String user = messageArray[1];
-                    String date = messageArray[2];
-                    String msg = messageArray[3];
+                    QMessage qMessage = new QMessage(messageArray[1],messageArray[2],messageArray[3], QMessage.TYPE_LEFT);
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
                     //发送获取的新消息到UI线程..
-                    runOnUiThread(() -> {
-
-
-                    });
+                    qMessageList.add(qMessage);
+                    messageAdapter.notify();
 
 
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
-                    ArrayList<String> users = new ArrayList<String>(), dates = new ArrayList<String>(), msgs = new ArrayList<String>();
+                    List<QMessage> tempList = new ArrayList<>();
                     for (int index = 1; index < messageArray.length; index += 3) {
-                        users.add(messageArray[index]);
-                        dates.add(messageArray[index + 1]);
-                        msgs.add(messageArray[index + 2]);
+                        QMessage qMessage =new QMessage(messageArray[index],messageArray[index+1],messageArray[index+2],QMessage.TYPE_LEFT);
+                        tempList.add(qMessage);
                     }
 
                     //发送历史消息到UI线程...
+                    qMessageList.addAll(tempList);
+                    messageAdapter.notify();
 
 
                 }
@@ -186,6 +184,9 @@ public class ChatRoom extends AppCompatActivity {
                     exception.printStackTrace();
                 }
             }).start();
+            QMessage qMessage = new QMessage(username,"2020",msg,QMessage.TYPE_RIGHT);
+            qMessageList.add(qMessage);
+            messageAdapter.notify();
         }
     }
 

@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-    List<Message> messageList;
+    List<QMessage> messageList;
 
-    public MessageAdapter(List<Message> messageList) {
+    public MessageAdapter(List<QMessage> messageList) {
         this.messageList = messageList;
     }
 
@@ -22,9 +22,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
-        if (viewType == Message.TYPE_LEFT) {
+        if (viewType == QMessage.TYPE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_box_left, parent, false);
-        } else if (viewType == Message.TYPE_RIGHT) {
+        } else if (viewType == QMessage.TYPE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_box_right, parent, false);
         }
         assert view != null;
@@ -33,8 +33,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Message msg = messageList.get(position);
-        holder.msgBox.setText(msg.getContent());
+        //绑定函数
+        QMessage msg = messageList.get(position);
+        String msgString = msg.getUser() +
+                " @ " +
+                msg.getDate() +
+                " say: \n" +
+                msg.getContent();
+        holder.msgBox.setText(msgString);
     }
 
     @Override
@@ -44,7 +50,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        Message msg = messageList.get(position);
+        QMessage msg = messageList.get(position);
         return msg.getType();
     }
 
