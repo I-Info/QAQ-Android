@@ -36,6 +36,7 @@ public class ChatRoom extends AppCompatActivity {
 
     private List<QMessage> qMessageList = new ArrayList<>();
     private MessageAdapter messageAdapter;
+    private LinearLayoutManager layoutManager;
 
     RecyclerView messageBox;
 
@@ -51,14 +52,22 @@ public class ChatRoom extends AppCompatActivity {
         username = intent.getStringExtra(MainActivity.USERNAME);
 
         //设置message box
-        messageBox = findViewById(R.id.messageBox);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        messageBox.setLayoutManager(layoutManager);
-        messageAdapter = new MessageAdapter(qMessageList);
-        messageBox.setAdapter(messageAdapter);
 
 
+    }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        layoutManager = new LinearLayoutManager(this);
         /*主socket接收线程*/
         Runnable socketThread = new Runnable() {
             @Override
@@ -72,6 +81,13 @@ public class ChatRoom extends AppCompatActivity {
                     outputStream.write(("{user&;named&;" + username + "}").getBytes(StandardCharsets.UTF_8));
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
+
+                    messageBox = findViewById(R.id.messageBox);
+
+                    messageBox.setLayoutManager(layoutManager);
+
+                    messageAdapter = new MessageAdapter(qMessageList);
+                    messageBox.setAdapter(messageAdapter);
 
                     char[] contentChar = new char[1024];
                     String content;
@@ -106,7 +122,7 @@ public class ChatRoom extends AppCompatActivity {
                                     }
 
                                 } catch (Exception exception) {
-                                    System.out.println(exception.getMessage());
+                                    exception.printStackTrace();
                                 }
                             }
 
@@ -134,9 +150,9 @@ public class ChatRoom extends AppCompatActivity {
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
 
-                    qMessageList.add(qMessage);
-                    messageAdapter.notify();
                     runOnUiThread(() -> {
+                        qMessageList.add(qMessage);
+                        messageAdapter.notifyItemInserted(qMessageList.size() - 1);
                         messageBox.scrollToPosition(qMessageList.size() - 1);
                     });
 
@@ -149,9 +165,9 @@ public class ChatRoom extends AppCompatActivity {
                     }
 
 
-                    qMessageList.addAll(tempList);
-                    messageAdapter.notify();
                     runOnUiThread(() -> {
+                        qMessageList.addAll(tempList);
+                        messageAdapter.notifyDataSetChanged();
                         messageBox.scrollToPosition(qMessageList.size() - 1);
                     });
 
@@ -161,19 +177,7 @@ public class ChatRoom extends AppCompatActivity {
         };
         new Thread(socketThread).start();
 
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        messageBox.scrollToPosition(qMessageList.size()-1);
+        //messageBox.scrollToPosition(qMessageList.size() - 1);
     }
 
     //发送按钮方法
@@ -212,4 +216,6 @@ public class ChatRoom extends AppCompatActivity {
         }
         return false;
     }
+
+
 }
