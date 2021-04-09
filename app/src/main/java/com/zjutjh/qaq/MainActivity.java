@@ -3,8 +3,11 @@ package com.zjutjh.qaq;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -27,6 +30,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //设置切换动画
+        Slide slideIn = new Slide();
+        slideIn.setSlideEdge(Gravity.END);
+        Slide slideOut = new Slide();
+        slideOut.setSlideEdge(Gravity.START);
+        getWindow().setEnterTransition(slideIn);
+        getWindow().setExitTransition(slideOut);
+
         textServerIp = (EditText) findViewById(R.id.serverIp);
         textServerPort = (EditText) findViewById(R.id.serverPort);
         textUsername = (EditText) findViewById(R.id.username);
@@ -36,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             textServerPort.setText(savedInstanceState.getInt(SERVER_PORT));
             textUsername.setText(savedInstanceState.getString(USERNAME));
         }
+
     }
 
 
@@ -78,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(SERVER_PORT, serverPort);
         intent.putExtra(USERNAME, username);
 
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
     }
 

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -19,7 +21,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -43,6 +47,7 @@ public class ChatRoom extends AppCompatActivity {
         setContentView(R.layout.activity_chatroom);
 
 
+
         Intent intent = getIntent();
         serverIp = intent.getStringExtra(MainActivity.SERVER_IP);
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
@@ -59,7 +64,8 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket(serverIp, serverPort);
+                    socket = new Socket();
+                    socket.connect(new InetSocketAddress(serverIp,serverPort), 3000);
 
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     outputStream = socket.getOutputStream();
@@ -72,6 +78,7 @@ public class ChatRoom extends AppCompatActivity {
                     StringBuilder packageMessage = new StringBuilder();
                     boolean startFlag = false;
                     try {
+                        //不断读取新消息，出现异常即停止。
                         while (bufferedReader.read(contentChar) != -1) {
                             content = String.valueOf(contentChar);
                             //解包循环，逐字符处理
@@ -111,6 +118,9 @@ public class ChatRoom extends AppCompatActivity {
 
                 } catch (Exception exception) {
                     exception.printStackTrace();
+                    runOnUiThread(()->{
+                        finish();
+                    });
                 }
 
             }
@@ -166,6 +176,7 @@ public class ChatRoom extends AppCompatActivity {
             msgBil.append("{msg&;send&;");
             msgBil.append(msg);
             msgBil.append('}');
+            //消息推送线程
             new Thread(() -> {
                 try {
                     outputStream.write(msgBil.toString().getBytes(StandardCharsets.UTF_8));
