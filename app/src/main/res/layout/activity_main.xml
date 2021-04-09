@@ -16,7 +16,6 @@
         android:ems="10"
         android:hint="@string/server_IP"
         android:inputType="textPersonName"
-        android:text="47.110.139.138"
         app:layout_constraintEnd_toStartOf="@+id/serverPort"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -46,7 +45,6 @@
         android:ems="10"
         android:hint="@string/user_name"
         android:inputType="textPersonName"
-        android:text="info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -85,7 +83,6 @@
         android:ems="10"
         android:hint="@string/server_port"
         android:inputType="number"
-        android:text="8080"
         app:layout_constraintBaseline_toBaselineOf="@+id/serverIp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

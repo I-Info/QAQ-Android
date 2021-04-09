@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
         textServerPort = findViewById(R.id.serverPort);
         textUsername = findViewById(R.id.username);
 
+        //For test.
+        textServerIp.setText("47.110.139.138");
+        textServerPort.setText("8080");
+        textUsername.setText("Testuser");
+
         if (savedInstanceState != null) {
             textServerIp.setText(savedInstanceState.getString(SERVER_IP));
             textServerPort.setText(savedInstanceState.getInt(SERVER_PORT));

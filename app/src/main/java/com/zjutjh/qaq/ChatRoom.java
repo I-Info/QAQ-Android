@@ -20,8 +20,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ChatRoom extends AppCompatActivity {
@@ -157,7 +160,12 @@ public class ChatRoom extends AppCompatActivity {
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                     List<QMessage> tempList = new ArrayList<>();
                     for (int index = 1; index < messageArray.length; index += 3) {
-                        QMessage qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_LEFT);
+                        QMessage qMessage;
+                        if (messageArray[index].equals(username)) {
+                            qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_RIGHT);
+                        } else {
+                            qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_LEFT);
+                        }
                         tempList.add(qMessage);
                     }
 
@@ -201,7 +209,7 @@ public class ChatRoom extends AppCompatActivity {
                     finish();
                 }
             }).start();
-            QMessage qMessage = new QMessage("", "", msg, QMessage.TYPE_RIGHT);
+            QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
             messageBox.scrollToPosition(qMessageList.size() - 1);
