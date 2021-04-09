@@ -55,12 +55,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout layout;
         TextView msgBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            layout = itemView.findViewById(R.id.layout);
             msgBox = itemView.findViewById(R.id.msg_box);
         }
     }

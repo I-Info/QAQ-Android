@@ -130,25 +130,30 @@ public class ChatRoom extends AppCompatActivity {
                 //处理已经解包后的接收到的消息
                 String[] messageArray = rawMessage.split("&;+");
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
-                    QMessage qMessage = new QMessage(messageArray[1],messageArray[2],messageArray[3], QMessage.TYPE_LEFT);
+                    QMessage qMessage = new QMessage(messageArray[1], messageArray[2], messageArray[3], QMessage.TYPE_LEFT);
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
 
-                    //发送获取的新消息到UI线程..
+
                     qMessageList.add(qMessage);
                     messageAdapter.notify();
+                    runOnUiThread(() -> {
+                        messageBox.scrollToPosition(qMessageList.size() - 1);
+                    });
 
 
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                     List<QMessage> tempList = new ArrayList<>();
                     for (int index = 1; index < messageArray.length; index += 3) {
-                        QMessage qMessage =new QMessage(messageArray[index],messageArray[index+1],messageArray[index+2],QMessage.TYPE_LEFT);
+                        QMessage qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_LEFT);
                         tempList.add(qMessage);
                     }
 
-                    //发送历史消息到UI线程...
+
                     qMessageList.addAll(tempList);
                     messageAdapter.notify();
-
+                    runOnUiThread(() -> {
+                        messageBox.scrollToPosition(qMessageList.size() - 1);
+                    });
 
                 }
             }
@@ -184,9 +189,10 @@ public class ChatRoom extends AppCompatActivity {
                     exception.printStackTrace();
                 }
             }).start();
-            QMessage qMessage = new QMessage(username,"2020",msg,QMessage.TYPE_RIGHT);
+            QMessage qMessage = new QMessage(username, "2020", msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
-            messageAdapter.notify();
+            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
+            messageBox.scrollToPosition(qMessageList.size() - 1);
         }
     }
 

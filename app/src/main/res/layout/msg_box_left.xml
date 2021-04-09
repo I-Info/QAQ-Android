@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="start"
-    android:background="@drawable/chatbox_ot">
+    android:elevation="4dp"
+    android:gravity="start"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/msg_box"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp" />
+        android:layout_marginStart="25dp"
+        android:text="name"
+        android:textColor="@color/gray" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/chatbox_ot"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/msg_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="time"
+        android:textColor="@color/gray" />
+
 </LinearLayout>
 
