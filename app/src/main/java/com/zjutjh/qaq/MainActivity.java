@@ -10,7 +10,11 @@ import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText textServerIp;
     private EditText textServerPort;
     private EditText textUsername;
+
+    private Thread thread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (username.equals("") || username.length() > 10) {
             textUsername.setError("Invalid username");
+            return;
         }
 
         serverPort = Integer.parseInt(portString);
@@ -90,13 +97,33 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        //预先测试连接:
+        if (thread != null && thread.isAlive()) {
+            return;
+        }
 
-        Intent intent = new Intent(this, ChatRoom.class);
-        intent.putExtra(SERVER_IP, serverIp);
-        intent.putExtra(SERVER_PORT, serverPort);
-        intent.putExtra(USERNAME, username);
+        Toast.makeText(getApplicationContext(), "Connecting..", Toast.LENGTH_SHORT).show();
+        thread = new Thread(() -> {
+            Socket socket = new Socket();
+            try {
+                socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(this, ChatRoom.class);
+                    intent.putExtra(SERVER_IP, serverIp);
+                    intent.putExtra(SERVER_PORT, serverPort);
+                    intent.putExtra(USERNAME, username);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                });
+            } catch (IOException exception) {
+                runOnUiThread(() -> {
+                    Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show();
+                });
+                exception.printStackTrace();
+            }
 
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        });
+        thread.start();
+
 
     }
 

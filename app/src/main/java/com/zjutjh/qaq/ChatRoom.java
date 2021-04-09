@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 public class ChatRoom extends AppCompatActivity {
@@ -76,6 +77,9 @@ public class ChatRoom extends AppCompatActivity {
                 try {
                     socket = new Socket();
                     socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
+                    });
 
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     outputStream = socket.getOutputStream();
@@ -122,6 +126,7 @@ public class ChatRoom extends AppCompatActivity {
                                     }
 
                                 } catch (Exception exception) {
+                                    Toast.makeText(getApplicationContext(), "Got invalid message", Toast.LENGTH_SHORT).show();
                                     exception.printStackTrace();
                                 }
                             }
@@ -135,7 +140,7 @@ public class ChatRoom extends AppCompatActivity {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     runOnUiThread(() -> {
-//                        Toast.makeText();
+                        Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show();
                         finish();
                     });
                 }
@@ -181,13 +186,11 @@ public class ChatRoom extends AppCompatActivity {
 
         };
         new Thread(socketThread).start();
-
-        //messageBox.scrollToPosition(qMessageList.size() - 1);
     }
 
     //发送按钮方法
     public void sendMessage(View view) {
-        if (socket != null) {
+        if (socket != null && socket.isConnected()) {
             EditText messageLine = (EditText) findViewById(R.id.messageLine);
             StringBuilder msgBil = new StringBuilder();
             String msg = messageLine.getText().toString().trim();
@@ -209,7 +212,7 @@ public class ChatRoom extends AppCompatActivity {
                     finish();
                 }
             }).start();
-            QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
+            @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
             messageBox.scrollToPosition(qMessageList.size() - 1);

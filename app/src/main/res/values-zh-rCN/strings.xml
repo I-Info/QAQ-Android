@@ -3,8 +3,7 @@
     <string name="app_name">QAQ</string>
     <string name="server_IP">服务器IP地址</string>
     <string name="server_port">端口</string>
-    <string name="config_server_info">服务器信息：</string>
-    <string name="config_user_info">用户信息：</string>
+    <string name="config_server_info">配置信息：</string>
     <string name="user_name">用户名</string>
     <string name="submit">确定</string>
     <string name="message_input">信息</string>
