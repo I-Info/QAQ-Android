@@ -58,6 +58,7 @@ public class ChatRoom extends AppCompatActivity {
         messageBox.setLayoutManager(layoutManager);
 
 
+
         /*主socket接收线程*/
         Runnable socketThread = new Runnable() {
             @Override
