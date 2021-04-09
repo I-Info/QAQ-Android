@@ -170,6 +170,12 @@ public class ChatRoom extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        messageBox.scrollToPosition(qMessageList.size()-1);
+    }
+
     //发送按钮方法
     public void sendMessage(View view) {
         if (socket != null) {
@@ -195,6 +201,7 @@ public class ChatRoom extends AppCompatActivity {
             messageBox.scrollToPosition(qMessageList.size() - 1);
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

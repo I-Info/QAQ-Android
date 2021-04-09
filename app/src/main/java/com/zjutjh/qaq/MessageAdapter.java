@@ -35,12 +35,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //绑定函数
         QMessage msg = messageList.get(position);
-        String msgString = msg.getUser() +
-                " @ " +
-                msg.getDate() +
-                " say: \n" +
-                msg.getContent();
-        holder.msgBox.setText(msgString);
+        holder.msgBox.setText(msg.getContent());
+        holder.name.setText(msg.getUser());
+        holder.time.setText(msg.getDate());
     }
 
     @Override
@@ -56,10 +53,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView msgBox;
-
+        TextView name;
+        TextView time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             msgBox = itemView.findViewById(R.id.msg_box);
+            name = itemView.findViewById(R.id.text_name);
+            time = itemView.findViewById(R.id.text_time);
         }
     }
 }
