@@ -2,15 +2,13 @@ package com.zjutjh.qaq;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -88,24 +85,6 @@ public class ChatRoom extends AppCompatActivity {
         });
 
 
-//        messageLine.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                if (qMessageList.size() > 0) {
-//                    messageBox.smoothScrollToPosition(qMessageList.size() - 1);
-//                }
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
         //监听打开键盘事件，滚动到底部
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             Rect rect = new Rect();
@@ -118,7 +97,6 @@ public class ChatRoom extends AppCompatActivity {
             }
 
         });
-
 
     }
 
@@ -144,10 +122,11 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket();
+                    socket = ((SocketService) getApplication()).getSocket();
 
                     //开始连接，连接超时时间3000ms
-                    socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
+                    if (socket == null || !socket.isConnected())
+                        throw new Exception("Connect error");
                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show());
 
                     //初始化输入输出流对象
@@ -196,7 +175,7 @@ public class ChatRoom extends AppCompatActivity {
 
                                 } catch (Exception exception) {
                                     //数据流处理中出现异常情况
-                                    Toast.makeText(getApplicationContext(), "Got invalid message", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Got invalid message", Toast.LENGTH_SHORT).show());
                                     exception.printStackTrace();
                                 }
                             }
@@ -216,7 +195,7 @@ public class ChatRoom extends AppCompatActivity {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Connect error.", Toast.LENGTH_SHORT).show();
                         finish();
                     });
                 }
@@ -306,6 +285,11 @@ public class ChatRoom extends AppCompatActivity {
             finish();
             return true;
         }
+        if (item.getItemId() == R.id.item_about) {
+            Intent intent = new Intent(this, About.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            return true;
+        }
         return false;
     }
 
@@ -315,6 +299,12 @@ public class ChatRoom extends AppCompatActivity {
         if (qMessageList.size() > 0) {
             messageBox.smoothScrollToPosition(qMessageList.size() - 1);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.default_menu, menu);
+        return true;
     }
 
 

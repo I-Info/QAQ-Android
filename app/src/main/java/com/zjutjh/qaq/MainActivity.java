@@ -1,9 +1,5 @@
 package com.zjutjh.qaq;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -52,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
         textServerPort = findViewById(R.id.serverPort);
         textUsername = findViewById(R.id.username);
 
-        //For test.
-        textServerIp.setText("47.110.139.138");
-        textServerPort.setText("8080");
-        textUsername.setText("Testuser");
 
         if (savedInstanceState != null) {
             textServerIp.setText(savedInstanceState.getString(SERVER_IP));
@@ -63,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             textUsername.setText(savedInstanceState.getString(USERNAME));
         }
 
-        ActionBar actionBar = getSupportActionBar();
 
     }
 
@@ -112,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
             Socket socket = new Socket();
             try {
                 socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
+
+                ((SocketService) getApplication()).setSocket(socket);
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, ChatRoom.class);
                     intent.putExtra(SERVER_IP, serverIp);
@@ -126,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
         thread.start();
-
 
     }
 
@@ -148,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_about) {
-            Toast.makeText(getApplicationContext(), "Dev by I_Info", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, About.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             return true;
         }
         return super.onOptionsItemSelected(item);

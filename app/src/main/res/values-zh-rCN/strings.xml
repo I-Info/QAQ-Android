@@ -9,4 +9,6 @@
     <string name="message_input">信息</string>
     <string name="send_button">发送</string>
     <string name="app_about">关于</string>
+    <string name="about_message_developer">客户端由I_Info开发，服务端由Node Sans开发</string>
+    <string name="about_message_thank">特别感谢Sink君的安卓开发指导</string>
 </resources>
