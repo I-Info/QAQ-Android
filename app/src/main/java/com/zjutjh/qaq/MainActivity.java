@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -137,7 +138,19 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(USERNAME, username);
     }
 
-    public void getAbout(View view) {
-        Toast.makeText(getApplicationContext(), "Dev by I_Info", Toast.LENGTH_SHORT).show();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.default_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.item_about) {
+            Toast.makeText(getApplicationContext(), "Dev by I_Info", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

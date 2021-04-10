@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -87,39 +88,37 @@ public class ChatRoom extends AppCompatActivity {
         });
 
 
-
-        messageLine.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (qMessageList.size() > 0) {
+//        messageLine.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                if (qMessageList.size() > 0) {
+//                    messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+//                }
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+        //监听打开键盘事件，滚动到底部
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect rect = new Rect();
+            getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+            final int rootViewHeight = getWindow().getDecorView().getRootView().getHeight();
+            if (rootViewHeight - rect.height() > 200) {
+                if (qMessageList.size() > 0 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 5) {
                     messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                 }
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
         });
 
-//        Rect rect =new Rect();
-//        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-//
-//        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            private int rootViewHeight;
-//
-//            @Override
-//            public void onGlobalLayout() {
-//                Rect rect =new Rect();
-//                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-//                int visibleHeight = rect.height();
-//            }
-//        });
 
     }
 
