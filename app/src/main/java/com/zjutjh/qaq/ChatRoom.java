@@ -29,20 +29,20 @@ import java.util.List;
 
 
 public class ChatRoom extends AppCompatActivity {
-    String serverIp;
-    int serverPort;
-    String username;
+    private String serverIp;
+    private int serverPort;
+    private String username;
 
-    Socket socket;
+    private Socket socket;
+    private Thread thread;
 
     private BufferedReader bufferedReader = null;
     private OutputStream outputStream = null;
 
-    private List<QMessage> qMessageList = new ArrayList<>();
+    private final List<QMessage> qMessageList = new ArrayList<>();
     private MessageAdapter messageAdapter;
-    private LinearLayoutManager layoutManager;
 
-    RecyclerView messageBox;
+    private RecyclerView messageBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,12 @@ public class ChatRoom extends AppCompatActivity {
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.USERNAME);
 
-
+        //设置message box (RecyclerView)
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        messageBox = findViewById(R.id.messageBox);
+        messageBox.setLayoutManager(layoutManager);
+        messageAdapter = new MessageAdapter(qMessageList);
+        messageBox.setAdapter(messageAdapter);
     }
 
 
@@ -69,30 +74,38 @@ public class ChatRoom extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        layoutManager = new LinearLayoutManager(this);
+
+        //如果线程已启动，则不做操作
+        if (thread != null && thread.isAlive()) {
+            return;
+        }
+
         /*主socket接收线程*/
         Runnable socketThread = new Runnable() {
             @Override
             public void run() {
                 try {
                     socket = new Socket();
+
+                    //开始连接，连接超时时间3000ms
                     socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
                     runOnUiThread(() -> {
                         Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
                     });
 
+                    //初始化输入输出流对象
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     outputStream = socket.getOutputStream();
+
+                    //发送QAQ协议用户名称请求
                     outputStream.write(("{user&;named&;" + username + "}").getBytes(StandardCharsets.UTF_8));
+                    //发送历史记录获取请求
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
 
-                    //设置message box
-                    messageBox = findViewById(R.id.messageBox);
-                    messageBox.setLayoutManager(layoutManager);
-                    messageAdapter = new MessageAdapter(qMessageList);
-                    messageBox.setAdapter(messageAdapter);
 
+
+                    //消息读取
                     char[] contentChar = new char[1024];
                     String content;
                     StringBuilder packageMessage = new StringBuilder();
@@ -126,15 +139,22 @@ public class ChatRoom extends AppCompatActivity {
                                     }
 
                                 } catch (Exception exception) {
+                                    //数据流处理中出现异常情况
                                     Toast.makeText(getApplicationContext(), "Got invalid message", Toast.LENGTH_SHORT).show();
                                     exception.printStackTrace();
                                 }
                             }
 
                         }
+                        throw new IOException("buffer read end");
                     } catch (
                             IOException exception) {
+                        //读取失败,说明连接已断开。
                         exception.printStackTrace();
+                        runOnUiThread(() -> {
+                            Toast.makeText(getApplicationContext(), "Network connection lost", Toast.LENGTH_SHORT).show();
+                            finish();
+                        });
                     }
 
                 } catch (Exception exception) {
@@ -153,7 +173,6 @@ public class ChatRoom extends AppCompatActivity {
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
                     QMessage qMessage = new QMessage(messageArray[1], messageArray[2], messageArray[3], QMessage.TYPE_LEFT);
                     //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
-
 
                     runOnUiThread(() -> {
                         qMessageList.add(qMessage);
@@ -185,7 +204,8 @@ public class ChatRoom extends AppCompatActivity {
             }
 
         };
-        new Thread(socketThread).start();
+        thread = new Thread(socketThread);
+        thread.start();
     }
 
     //发送按钮方法
