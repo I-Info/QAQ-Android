@@ -1,17 +1,23 @@
 package com.zjutjh.qaq;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,9 +47,12 @@ public class ChatRoom extends AppCompatActivity {
 
     private final List<QMessage> qMessageList = new ArrayList<>();
     private MessageAdapter messageAdapter;
+    private LinearLayoutManager layoutManager;
 
     private RecyclerView messageBox;
+    private EditText messageLine;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +64,63 @@ public class ChatRoom extends AppCompatActivity {
         serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.USERNAME);
 
+        messageLine = findViewById(R.id.messageLine);
+
+
         //设置message box (RecyclerView)
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         messageBox = findViewById(R.id.messageBox);
         messageBox.setLayoutManager(layoutManager);
         messageAdapter = new MessageAdapter(qMessageList);
         messageBox.setAdapter(messageAdapter);
+
+        messageBox.setOnTouchListener((v, event) -> {
+            InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            return false;
+        });
+
+        //回车发送
+        messageLine.setOnEditorActionListener((v, actionId, event) -> {
+            sendMessage(v);
+            return false;
+        });
+
+
+
+        messageLine.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (qMessageList.size() > 0) {
+                    messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+//        Rect rect =new Rect();
+//        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+//
+//        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            private int rootViewHeight;
+//
+//            @Override
+//            public void onGlobalLayout() {
+//                Rect rect =new Rect();
+//                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+//                int visibleHeight = rect.height();
+//            }
+//        });
+
     }
 
 
@@ -102,7 +162,6 @@ public class ChatRoom extends AppCompatActivity {
                     //发送历史记录获取请求
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
-
 
 
                     //消息读取
@@ -177,7 +236,10 @@ public class ChatRoom extends AppCompatActivity {
                     runOnUiThread(() -> {
                         qMessageList.add(qMessage);
                         messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-                        messageBox.scrollToPosition(qMessageList.size() - 1);
+
+                        //接收新消息的滚动条件
+                        if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 5)
+                            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                     });
 
 
@@ -197,7 +259,7 @@ public class ChatRoom extends AppCompatActivity {
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
                         messageAdapter.notifyDataSetChanged();
-                        messageBox.scrollToPosition(qMessageList.size() - 1);
+                        messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                     });
 
                 }
@@ -206,12 +268,12 @@ public class ChatRoom extends AppCompatActivity {
         };
         thread = new Thread(socketThread);
         thread.start();
+
     }
 
     //发送按钮方法
     public void sendMessage(View view) {
         if (socket != null && socket.isConnected()) {
-            EditText messageLine = (EditText) findViewById(R.id.messageLine);
             StringBuilder msgBil = new StringBuilder();
             String msg = messageLine.getText().toString().trim();
             if (msg.isEmpty()) {
@@ -235,7 +297,7 @@ public class ChatRoom extends AppCompatActivity {
             @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-            messageBox.scrollToPosition(qMessageList.size() - 1);
+            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
         }
     }
 
@@ -253,8 +315,10 @@ public class ChatRoom extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (messageBox != null) {
-            messageBox.scrollToPosition(qMessageList.size() - 1);
+        if (qMessageList.size() > 0) {
+            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
         }
     }
+
+
 }
