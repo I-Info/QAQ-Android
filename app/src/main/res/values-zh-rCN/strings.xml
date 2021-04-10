@@ -8,4 +8,5 @@
     <string name="submit">确定</string>
     <string name="message_input">信息</string>
     <string name="send_button">发送</string>
+    <string name="app_about">关于</string>
 </resources>

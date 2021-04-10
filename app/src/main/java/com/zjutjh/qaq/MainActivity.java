@@ -1,6 +1,7 @@
 package com.zjutjh.qaq;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             textServerPort.setText(savedInstanceState.getInt(SERVER_PORT));
             textUsername.setText(savedInstanceState.getString(USERNAME));
         }
+
+        ActionBar actionBar = getSupportActionBar();
 
     }
 
@@ -115,9 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 });
             } catch (IOException exception) {
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show());
                 exception.printStackTrace();
             }
 
@@ -133,5 +135,9 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(SERVER_IP, serverIp);
         outState.putInt(SERVER_PORT, serverPort);
         outState.putString(USERNAME, username);
+    }
+
+    public void getAbout(View view) {
+        Toast.makeText(getApplicationContext(), "Dev by I_Info", Toast.LENGTH_SHORT).show();
     }
 }

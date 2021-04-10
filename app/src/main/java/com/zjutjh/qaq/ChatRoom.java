@@ -149,9 +149,7 @@ public class ChatRoom extends AppCompatActivity {
 
                     //开始连接，连接超时时间3000ms
                     socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
-                    runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
-                    });
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show());
 
                     //初始化输入输出流对象
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
