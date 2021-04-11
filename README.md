@@ -1,4 +1,6 @@
-# QAQ-Android
+# QAQ  Android Client
 QAQ Client for Android
+v1.0.1
 
-## In development
+## Todo list
+- [ ] 使用base64对用户名、信息内容进行处理。
