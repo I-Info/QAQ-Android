@@ -6,6 +6,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ViewUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,8 +35,6 @@ import java.util.List;
 
 
 public class ChatRoom extends AppCompatActivity {
-    private String serverIp;
-    private int serverPort;
     private String username;
 
     private Socket socket;
@@ -50,6 +50,7 @@ public class ChatRoom extends AppCompatActivity {
     private RecyclerView messageBox;
     private EditText messageLine;
 
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,6 @@ public class ChatRoom extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        serverIp = intent.getStringExtra(MainActivity.SERVER_IP);
-        serverPort = intent.getIntExtra(MainActivity.SERVER_PORT, 8080);
         username = intent.getStringExtra(MainActivity.USERNAME);
 
         messageLine = findViewById(R.id.messageLine);
@@ -67,6 +66,8 @@ public class ChatRoom extends AppCompatActivity {
 
         //设置message box (RecyclerView)
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);//软键盘弹出自动上移
+
         messageBox = findViewById(R.id.messageBox);
         messageBox.setLayoutManager(layoutManager);
         messageAdapter = new MessageAdapter(qMessageList);
@@ -85,26 +86,13 @@ public class ChatRoom extends AppCompatActivity {
         });
 
 
-        //监听打开键盘事件，滚动到底部
-        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            Rect rect = new Rect();
-            getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-            final int rootViewHeight = getWindow().getDecorView().getRootView().getHeight();
-            if (rootViewHeight - rect.height() > 200) {
-                if (qMessageList.size() > 0 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 5) {
-                    messageBox.smoothScrollToPosition(qMessageList.size() - 1);
-                }
-            }
-
-        });
-
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
     }
 
 
@@ -199,7 +187,6 @@ public class ChatRoom extends AppCompatActivity {
                         finish();
                     });
                 }
-
             }
 
             private void messageHandler(@NotNull String rawMessage) {
@@ -214,7 +201,7 @@ public class ChatRoom extends AppCompatActivity {
                         messageAdapter.notifyItemInserted(qMessageList.size() - 1);
 
                         //接收新消息的滚动条件
-                        if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 5)
+                        if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 8)
                             messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                     });
 

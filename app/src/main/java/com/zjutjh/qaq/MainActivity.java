@@ -61,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //回到主界面时清除socket
+        ((SocketService) getApplication()).setSocket(null);
+    }
 
     public void onSubmit(View view) {
 
@@ -110,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 ((SocketService) getApplication()).setSocket(socket);
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, ChatRoom.class);
-                    intent.putExtra(SERVER_IP, serverIp);
-                    intent.putExtra(SERVER_PORT, serverPort);
                     intent.putExtra(USERNAME, username);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 });
