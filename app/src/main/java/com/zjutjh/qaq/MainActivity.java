@@ -2,8 +2,10 @@ package com.zjutjh.qaq;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +22,10 @@ import java.net.Socket;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "com.zjutjh.qaq.";
-    public static final String SERVER_IP = TAG + "SERVER_IP";
-    public static final String SERVER_PORT = TAG + "SERVER_PORT";
-    public static final String USERNAME = TAG + "USERNAME";
+    public static final String TAG = "com.zjutjh.qaq";
+    public static final String SERVER_IP = TAG + ".SERVER_IP";
+    public static final String SERVER_PORT = TAG + ".SERVER_PORT";
+    public static final String USERNAME = TAG + ".USERNAME";
     private String serverIp;
     private int serverPort;
     private String username;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText textUsername;
 
     private Thread thread;
+
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +55,20 @@ public class MainActivity extends AppCompatActivity {
         textServerPort = findViewById(R.id.serverPort);
         textUsername = findViewById(R.id.username);
 
+        preferences = getSharedPreferences(TAG, MODE_PRIVATE);
+
 
         if (savedInstanceState != null) {
+            //从内存读取保存的配置信息
             textServerIp.setText(savedInstanceState.getString(SERVER_IP));
-            textServerPort.setText(savedInstanceState.getInt(SERVER_PORT));
+            textServerPort.setText(String.valueOf(savedInstanceState.getInt(SERVER_PORT)));
             textUsername.setText(savedInstanceState.getString(USERNAME));
+        } else if (preferences.getString(SERVER_IP, null) != null) {
+            //从存储中读取保存的配置信息
+            textServerIp.setText(preferences.getString(SERVER_IP, null));
+            textServerPort.setText(String.valueOf(preferences.getInt(SERVER_PORT, 0)));
+            textUsername.setText(preferences.getString(USERNAME, null));
         }
-
 
     }
 
@@ -115,6 +126,13 @@ public class MainActivity extends AppCompatActivity {
 
                 ((SocketService) getApplication()).setSocket(socket);
                 runOnUiThread(() -> {
+                    //配置信息持久化存储
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(SERVER_IP, serverIp);
+                    editor.putInt(SERVER_PORT, serverPort);
+                    editor.putString(USERNAME, username);
+                    editor.apply();
+                    Log.i(TAG, "信息保存成功");
                     Intent intent = new Intent(this, ChatRoom.class);
                     intent.putExtra(USERNAME, username);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
