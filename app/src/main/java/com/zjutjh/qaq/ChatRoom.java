@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +27,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -120,7 +120,7 @@ public class ChatRoom extends AppCompatActivity {
                     outputStream = socket.getOutputStream();
 
                     //发送QAQ协议用户名称请求
-                    outputStream.write(("{user&;named&;" + username + "}").getBytes(StandardCharsets.UTF_8));
+                    outputStream.write(("{user&;named&;" + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)) + "}").getBytes(StandardCharsets.UTF_8));
                     //发送历史记录获取请求
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
@@ -191,13 +191,14 @@ public class ChatRoom extends AppCompatActivity {
                 //处理已经解包后的接收到的消息
                 String[] messageArray = rawMessage.split("&;+");
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
-                    QMessage qMessage = new QMessage(messageArray[1], messageArray[2], messageArray[3], QMessage.TYPE_LEFT);
-                    //String msg = new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8);
+                    QMessage qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[1]), StandardCharsets.UTF_8),
+                            messageArray[2],
+                            new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
+
 
                     runOnUiThread(() -> {
                         qMessageList.add(qMessage);
                         messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-
 
 
                         //接收新消息的滚动条件
@@ -211,9 +212,13 @@ public class ChatRoom extends AppCompatActivity {
                     for (int index = 1; index < messageArray.length; index += 3) {
                         QMessage qMessage;
                         if (messageArray[index].equals(username)) {
-                            qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_RIGHT);
+                            qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
+                                    messageArray[index + 1],
+                                    new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_RIGHT);
                         } else {
-                            qMessage = new QMessage(messageArray[index], messageArray[index + 1], messageArray[index + 2], QMessage.TYPE_LEFT);
+                            qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
+                                    messageArray[index + 1],
+                                    new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
                         }
                         tempList.add(qMessage);
                     }
@@ -244,7 +249,7 @@ public class ChatRoom extends AppCompatActivity {
             }
             messageLine.setText("");
             msgBil.append("{msg&;send&;");
-            msgBil.append(msg);
+            msgBil.append(Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8)));
             msgBil.append('}');
             //消息推送线程
             new Thread(() -> {
