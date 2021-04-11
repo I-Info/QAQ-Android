@@ -211,7 +211,7 @@ public class ChatRoom extends AppCompatActivity {
                     List<QMessage> tempList = new ArrayList<>();
                     for (int index = 1; index < messageArray.length; index += 3) {
                         QMessage qMessage;
-                        if (messageArray[index].equals(username)) {
+                        if (messageArray[index].equals(Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)))) {
                             qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
                                     messageArray[index + 1],
                                     new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_RIGHT);
