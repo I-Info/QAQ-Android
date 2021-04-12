@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -186,6 +187,7 @@ public class ChatRoom extends AppCompatActivity {
                     }
 
                 } catch (Exception exception) {
+                    //进入activity时socket连接已断开
                     exception.printStackTrace();
                     runOnUiThread(() -> {
                         Toast.makeText(getApplicationContext(), R.string.error_conn_error, Toast.LENGTH_SHORT).show();
@@ -207,6 +209,7 @@ public class ChatRoom extends AppCompatActivity {
                             qMessageList.add(qMessage);
                             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
 
+                            //发送通知
                             builder.setTicker(qMessage.getContent());
                             builder.setContentTitle(qMessage.getUser());
                             builder.setContentText(qMessage.getContent());
@@ -214,6 +217,11 @@ public class ChatRoom extends AppCompatActivity {
                             builder.setSmallIcon(R.mipmap.ic_launcher_round);
                             builder.setWhen(System.currentTimeMillis());
                             builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+
+                            Intent intent = new Intent(getApplicationContext(), ChatRoom.class);
+                            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            builder.setContentIntent(pi);
+
                             notificationManager.notify(1, builder.build());
 
 
