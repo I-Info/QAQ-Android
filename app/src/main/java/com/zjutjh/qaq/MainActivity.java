@@ -86,30 +86,30 @@ public class MainActivity extends AppCompatActivity {
         username = textUsername.getText().toString();
 
         if (serverIp.equals("")) {
-            textServerIp.setError("Please input server IP address");
+            textServerIp.setError(getString(R.string.require_ip));
             return;
         }
 
         if (portString.equals("")) {
-            textServerPort.setError("Please input server port");
+            textServerPort.setError(getString(R.string.require_port));
             return;
         }
 
         if (username.equals("") || username.length() > 10) {
-            textUsername.setError("Invalid username");
+            textUsername.setError(getString(R.string.invalid_user));
             return;
         }
 
         serverPort = Integer.parseInt(portString);
         if (serverPort < 0 || serverPort > 65535) {
-            textServerPort.setError("Invalid server port");
+            textServerPort.setError(getString(R.string.invalid_port));
             return;
         }
 
         String regExp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
         Pattern pattern = Pattern.compile(regExp);
         if (!pattern.matcher(serverIp).matches()) {
-            textServerIp.setError("Invalid IP address");
+            textServerIp.setError(getString(R.string.invalid_ip));
             return;
         }
 
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(getApplicationContext(), "Connecting..", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.conn, Toast.LENGTH_SHORT).show();
         thread = new Thread(() -> {
             Socket socket = new Socket();
             try {
@@ -132,13 +132,14 @@ public class MainActivity extends AppCompatActivity {
                     editor.putInt(SERVER_PORT, serverPort);
                     editor.putString(USERNAME, username);
                     editor.apply();
-                    Log.i(TAG, "信息保存成功");
+                    Log.i(TAG, "Config saved");
                     Intent intent = new Intent(this, ChatRoom.class);
                     intent.putExtra(USERNAME, username);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 });
             } catch (IOException exception) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Connect failed.", Toast.LENGTH_SHORT).show());
+                //连接失败
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_conn_fail, Toast.LENGTH_SHORT).show());
                 exception.printStackTrace();
             }
 

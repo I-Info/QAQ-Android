@@ -13,4 +13,13 @@
     <string name="about_message_thank">特别感谢Sink君的安卓开发指导</string>
     <string name="error_conn_lost">连接已断开</string>
     <string name="error_conn_error">连接错误，请稍后尝试重新连接</string>
+    <string name="error_invalid_msg">检测到无效信息</string>
+    <string name="conn_success">连接成功</string>
+    <string name="error_conn_fail">连接失败</string>
+    <string name="conn">连接中..</string>
+    <string name="require_ip">请输入服务器IP地址</string>
+    <string name="require_port">请输入服务器端口</string>
+    <string name="invalid_user">用户名无效</string>
+    <string name="invalid_ip">IP地址无效</string>
+    <string name="invalid_port">端口号无效</string>
 </resources>

@@ -114,7 +114,7 @@ public class ChatRoom extends AppCompatActivity {
                     //开始连接，连接超时时间3000ms
                     if (socket == null || !socket.isConnected())
                         throw new Exception("Connect error");
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.conn_success, Toast.LENGTH_SHORT).show());
 
                     //初始化输入输出流对象
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -208,7 +208,7 @@ public class ChatRoom extends AppCompatActivity {
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Detected invalid message", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT).show());
                     }
 
 
@@ -229,7 +229,7 @@ public class ChatRoom extends AppCompatActivity {
                             tempList.add(qMessage);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Detected invalid message", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT).show());
                         }
                     }
 

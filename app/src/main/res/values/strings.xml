@@ -14,4 +14,13 @@
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>
     <string name="error_conn_lost">Network connection lost</string>
     <string name="error_conn_error">Connect error. Please try again latter.</string>
+    <string name="error_invalid_msg">Detected invalid message</string>
+    <string name="conn_success">Connected</string>
+    <string name="error_conn_fail">Connect failed</string>
+    <string name="conn">Connecting…</string>
+    <string name="require_ip">Please input server IP address</string>
+    <string name="require_port">Please input server port</string>
+    <string name="invalid_user">Invalid username</string>
+    <string name="invalid_ip">Invalid IP address</string>
+    <string name="invalid_port">Invalid server port</string>
 </resources>
