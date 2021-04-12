@@ -2,4 +2,5 @@
 <resources>
     <color name="onBackground">#121212</color>
     <color name="chatBackground">#121212</color>
+    <color name="blue_deeper">#121212</color>
 </resources>
