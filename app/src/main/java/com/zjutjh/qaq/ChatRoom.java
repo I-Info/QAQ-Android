@@ -71,6 +71,7 @@ public class ChatRoom extends AppCompatActivity {
         messageAdapter = new MessageAdapter(qMessageList);
         messageBox.setAdapter(messageAdapter);
 
+        //点击屏幕上部关闭软键盘
         messageBox.setOnTouchListener((v, event) -> {
             InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -191,6 +192,7 @@ public class ChatRoom extends AppCompatActivity {
                 //处理已经解包后的接收到的消息
                 String[] messageArray = rawMessage.split("&;+");
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
+
                     QMessage qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[1]), StandardCharsets.UTF_8),
                             messageArray[2],
                             new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
