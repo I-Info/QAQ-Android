@@ -3,7 +3,10 @@ package com.zjutjh.qaq;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +52,8 @@ public class ChatRoom extends AppCompatActivity {
     private RecyclerView messageBox;
     private EditText messageLine;
 
+    private NotificationManager notificationManager;
+    private NotificationCompat.Builder builder;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -83,6 +89,14 @@ public class ChatRoom extends AppCompatActivity {
             sendMessage(v);
             return false;
         });
+
+        //Notification Service
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationChannel notificationChannel = new NotificationChannel("Default Channel",getString(R.string.app_name),
+                NotificationManager.IMPORTANCE_DEFAULT);
+        notificationManager.createNotificationChannel(notificationChannel);
+        builder = new NotificationCompat.Builder(this,"Default Channel");
+
 
 
     }
@@ -200,6 +214,16 @@ public class ChatRoom extends AppCompatActivity {
                         runOnUiThread(() -> {
                             qMessageList.add(qMessage);
                             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
+
+                            builder.setTicker(qMessage.getUser());
+                            builder.setContentTitle(qMessage.getUser());
+                            builder.setContentText(qMessage.getContent());
+                            builder.setAutoCancel(true);
+                            builder.setSmallIcon(R.mipmap.ic_launcher_round);
+//                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                            notificationManager.notify(1,builder.build());
+
 
 
                             //接收新消息的滚动条件
