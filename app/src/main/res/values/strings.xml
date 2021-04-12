@@ -12,4 +12,6 @@
     <string name="about_message_developer">Client developed by I_Info, Server developed by Node Sans</string>
     <string name="about_message_thank">Special thanks to Sink</string>
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>
+    <string name="error_conn_lost">Network connection lost</string>
+    <string name="error_conn_error">Connect error. Please try again latter.</string>
 </resources>

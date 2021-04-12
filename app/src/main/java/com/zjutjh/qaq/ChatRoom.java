@@ -162,19 +162,19 @@ public class ChatRoom extends AppCompatActivity {
 
                                 } catch (Exception exception) {
                                     //数据流处理中出现异常情况
-                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Got invalid message", Toast.LENGTH_SHORT).show());
+                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Caught invalid message pack :(", Toast.LENGTH_SHORT).show());
                                     exception.printStackTrace();
                                 }
                             }
 
                         }
-                        throw new IOException("buffer read end");
+                        throw new IOException("Buffer read end");
                     } catch (
                             IOException exception) {
                         //读取失败,说明连接已断开。
                         exception.printStackTrace();
                         runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), "Network connection lost", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT).show();
                             finish();
                         });
                     }
@@ -182,7 +182,7 @@ public class ChatRoom extends AppCompatActivity {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "Connect error.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.error_conn_error, Toast.LENGTH_SHORT).show();
                         finish();
                     });
                 }
@@ -192,39 +192,46 @@ public class ChatRoom extends AppCompatActivity {
                 //处理已经解包后的接收到的消息
                 String[] messageArray = rawMessage.split("&;+");
                 if (messageArray[0].equals("msg") && messageArray.length == 4) {
+                    try {
+                        QMessage qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[1]), StandardCharsets.UTF_8),
+                                messageArray[2],
+                                new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
 
-                    QMessage qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[1]), StandardCharsets.UTF_8),
-                            messageArray[2],
-                            new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
+                        runOnUiThread(() -> {
+                            qMessageList.add(qMessage);
+                            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
 
 
-                    runOnUiThread(() -> {
-                        qMessageList.add(qMessage);
-                        messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-
-
-                        //接收新消息的滚动条件
-                        if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 8)
-                            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
-                    });
+                            //接收新消息的滚动条件
+                            if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 8)
+                                messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Detected invalid message", Toast.LENGTH_SHORT).show());
+                    }
 
 
                 } else if (messageArray[0].equals("msghistory") && messageArray.length >= 4) {
                     List<QMessage> tempList = new ArrayList<>();
                     for (int index = 1; index < messageArray.length; index += 3) {
                         QMessage qMessage;
-                        if (messageArray[index].equals(Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)))) {
-                            qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
-                                    messageArray[index + 1],
-                                    new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_RIGHT);
-                        } else {
-                            qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
-                                    messageArray[index + 1],
-                                    new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
+                        try {
+                            if (messageArray[index].equals(Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)))) {
+                                qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
+                                        messageArray[index + 1],
+                                        new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_RIGHT);
+                            } else {
+                                qMessage = new QMessage(new String(Base64.getDecoder().decode(messageArray[index]), StandardCharsets.UTF_8),
+                                        messageArray[index + 1],
+                                        new String(Base64.getDecoder().decode(messageArray[index + 2]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
+                            }
+                            tempList.add(qMessage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Detected invalid message", Toast.LENGTH_SHORT).show());
                         }
-                        tempList.add(qMessage);
                     }
-
 
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
