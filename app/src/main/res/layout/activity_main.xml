@@ -31,7 +31,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:text="@string/config_server_info"
-        android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -72,10 +71,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:errorEnabled="true"
+        app:boxBackgroundColor="@color/onBackground"
         app:counterEnabled="true"
         app:counterMaxLength="10"
-        app:boxBackgroundColor="@color/white"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/serverIp">

@@ -13,7 +13,7 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:text="time"
-        android:textColor="@color/gray"
+        android:textColor="@color/grey"
         android:textSize="12sp" />
 
     <TextView
@@ -24,13 +24,13 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="end"
         android:text="name"
-        android:textColor="@color/gray" />
+        android:textColor="@color/grey" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/msg_get"
+        android:background="@drawable/msg_box_right"
         android:elevation="4dp"
         android:orientation="vertical">
 
@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
+            android:textColor="@color/white"
             android:textIsSelectable="true" />
 
     </LinearLayout>
