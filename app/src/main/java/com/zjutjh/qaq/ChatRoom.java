@@ -6,7 +6,6 @@ import android.app.ActivityOptions;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +54,7 @@ public class ChatRoom extends AppCompatActivity {
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
 
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,19 +92,11 @@ public class ChatRoom extends AppCompatActivity {
 
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = new NotificationChannel("Default Channel",getString(R.string.app_name),
+        NotificationChannel notificationChannel = new NotificationChannel("Default Channel", getString(R.string.app_name),
                 NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(notificationChannel);
-        builder = new NotificationCompat.Builder(this,"Default Channel");
+        builder = new NotificationCompat.Builder(this, "Default Channel");
 
-
-
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
 
     }
 
@@ -215,15 +207,14 @@ public class ChatRoom extends AppCompatActivity {
                             qMessageList.add(qMessage);
                             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
 
-                            builder.setTicker(qMessage.getUser());
+                            builder.setTicker(qMessage.getContent());
                             builder.setContentTitle(qMessage.getUser());
                             builder.setContentText(qMessage.getContent());
                             builder.setAutoCancel(true);
                             builder.setSmallIcon(R.mipmap.ic_launcher_round);
-//                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                            builder.setWhen(System.currentTimeMillis());
                             builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-                            notificationManager.notify(1,builder.build());
-
+                            notificationManager.notify(1, builder.build());
 
 
                             //接收新消息的滚动条件
@@ -332,5 +323,13 @@ public class ChatRoom extends AppCompatActivity {
         return true;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            socket.shutdownInput();//关闭输入流来关闭socket服务线程
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 }
