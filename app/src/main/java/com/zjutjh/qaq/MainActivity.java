@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textUsername;
 
     private Thread thread;
+    private Toast toast;
 
     private SharedPreferences preferences;
 
@@ -117,8 +118,11 @@ public class MainActivity extends AppCompatActivity {
         if (thread != null && thread.isAlive()) {
             return;
         }
-
-        Toast.makeText(getApplicationContext(), R.string.conn, Toast.LENGTH_SHORT).show();
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(getApplicationContext(), R.string.conn, Toast.LENGTH_SHORT);
+        toast.show();
         thread = new Thread(() -> {
             Socket socket = new Socket();
             try {
@@ -139,7 +143,13 @@ public class MainActivity extends AppCompatActivity {
                 });
             } catch (IOException exception) {
                 //连接失败
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_conn_fail, Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {
+                    if (toast != null) {
+                        toast.cancel();
+                    }
+                    toast = Toast.makeText(getApplicationContext(), R.string.error_conn_fail, Toast.LENGTH_SHORT);
+                    toast.show();
+                });
                 exception.printStackTrace();
             }
 

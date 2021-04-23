@@ -1,5 +1,7 @@
 package com.zjutjh.qaq;
 
+import org.jetbrains.annotations.NotNull;
+
 public class QMessage {
     public static final int TYPE_LEFT = 0x0;
     public static final int TYPE_RIGHT = 0x1;
@@ -31,5 +33,15 @@ public class QMessage {
 
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "QMessage{" +
+                "msgType=" + msgType +
+                ", user='" + user + '\'' +
+                ", date='" + date + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
