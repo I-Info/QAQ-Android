@@ -36,7 +36,9 @@
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/message_input"
-            android:inputType="textShortMessage|textAutoCorrect|textMultiLine" />
+            android:inputType="textShortMessage|textAutoCorrect|textMultiLine"
+            android:maxLines="3"
+            android:scrollbars="vertical" />
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -47,7 +49,7 @@
             android:contentDescription="@string/send_button"
             android:onClick="sendMessage"
             android:theme="@style/RippleWhite"
-            android:tint="#81D4FA"
+            android:tint="#4DC7FF"
             android:translationX="-3dp"
             android:translationY="7dp"
             app:srcCompat="@android:drawable/ic_menu_send" />

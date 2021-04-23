@@ -69,6 +69,7 @@ public class ChatRoom extends AppCompatActivity {
 
         messageLine = findViewById(R.id.messageLine);
 
+        toast = ((SocketApp) getApplication()).getToast2();
 
         //设置message box (RecyclerView)
         layoutManager = new LinearLayoutManager(this);
@@ -86,11 +87,6 @@ public class ChatRoom extends AppCompatActivity {
             return false;
         });
 
-        //回车发送
-//        messageLine.setOnEditorActionListener((v, actionId, event) -> {
-//            sendMessage(v);
-//            return false;
-//        });
 
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -117,21 +113,19 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = ((SocketService) getApplication()).getSocket();
+                    socket = ((SocketApp) getApplication()).getSocket();
 
                     //开始连接，连接超时时间3000ms
                     if (socket == null || !socket.isConnected())
                         throw new Exception("Connect error");
                     runOnUiThread(() -> {
-                        if (toast != null) {
-                            toast.cancel();
-                        }
-                        toast = Toast.makeText(getApplicationContext(), R.string.conn_success, Toast.LENGTH_SHORT);
+
+                        toast.setText(R.string.conn_success);
                         toast.show();
                     });
 
                     //初始化输入输出流对象
-                    bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1024 * 8);
                     outputStream = socket.getOutputStream();
 
                     //发送QAQ协议用户名称请求
@@ -176,7 +170,10 @@ public class ChatRoom extends AppCompatActivity {
 
                                 } catch (Exception exception) {
                                     //数据流处理中出现异常情况
-                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Caught invalid message pack :(", Toast.LENGTH_SHORT).show());
+                                    runOnUiThread(() -> {
+                                        toast.setText("Caught invalid message pack :(");
+                                        toast.show();
+                                    });
                                     exception.printStackTrace();
                                 }
                             }
@@ -187,11 +184,10 @@ public class ChatRoom extends AppCompatActivity {
                             IOException exception) {
                         //读取失败,说明连接已断开。
                         exception.printStackTrace();
+                        socket.close();
+                        ((SocketApp) getApplication()).setSocket(null);
                         runOnUiThread(() -> {
-                            if (toast != null) {
-                                toast.cancel();
-                            }
-                            toast = Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT);
+                            toast.setText(R.string.error_conn_lost);
                             toast.show();
                             finish();
                         });
@@ -201,7 +197,9 @@ public class ChatRoom extends AppCompatActivity {
                     //进入activity时socket连接已断开
                     exception.printStackTrace();
                     runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), R.string.error_conn_error, Toast.LENGTH_SHORT).show();
+                        Toast toast = ((SocketApp) getApplication()).getToast3();
+                        toast.setText(R.string.error_conn_error);
+                        toast.show();
                         finish();
                     });
                 }
@@ -243,11 +241,9 @@ public class ChatRoom extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                         runOnUiThread(() -> {
-                            if (toast != null) {
-                                toast.cancel();
-                                toast = Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
+                            Toast toast = ((SocketApp) getApplication()).getToast3();
+                            toast.setText(R.string.error_invalid_msg);
+                            toast.show();
                         });
                     }
 
@@ -271,11 +267,9 @@ public class ChatRoom extends AppCompatActivity {
                             e.printStackTrace();
                             System.out.println(rawMessage);
                             runOnUiThread(() -> {
-                                if (toast != null) {
-                                    toast.cancel();
-                                    toast = Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT);
-                                    toast.show();
-                                }
+                                Toast toast = ((SocketApp) getApplication()).getToast3();
+                                toast.setText(R.string.error_invalid_msg);
+                                toast.show();
                             });
                         }
                     }
@@ -316,10 +310,7 @@ public class ChatRoom extends AppCompatActivity {
                     //发送失败，说明已断开连接
                     exception.printStackTrace();
                     runOnUiThread(() -> {
-                        if (toast != null) {
-                            toast.cancel();
-                        }
-                        toast = Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT);
+                        toast.setText(R.string.error_conn_lost);
                         toast.show();
                         finish();
                     });
@@ -329,8 +320,6 @@ public class ChatRoom extends AppCompatActivity {
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
             messageBox.smoothScrollToPosition(qMessageList.size() - 1);
-            InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -369,7 +358,7 @@ public class ChatRoom extends AppCompatActivity {
         super.onDestroy();
         try {
             socket.shutdownInput();//关闭输入流来关闭socket服务线程
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }

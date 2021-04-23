@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         textServerPort = findViewById(R.id.serverPort);
         textUsername = findViewById(R.id.username);
 
+        toast = ((SocketApp) getApplication()).getToast1();
+
         preferences = getSharedPreferences(TAG, MODE_PRIVATE);
 
 
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //回到主界面时清除socket
-        ((SocketService) getApplication()).setSocket(null);
+        ((SocketApp) getApplication()).setSocket(null);
     }
 
     public void onSubmit(View view) {
@@ -118,17 +120,19 @@ public class MainActivity extends AppCompatActivity {
         if (thread != null && thread.isAlive()) {
             return;
         }
-        if (toast != null) {
-            toast.cancel();
+
+        if (((SocketApp) getApplication()).getSocket() != null) {
+            return;
         }
-        toast = Toast.makeText(getApplicationContext(), R.string.conn, Toast.LENGTH_SHORT);
+
+        toast.setText(R.string.conn);
         toast.show();
         thread = new Thread(() -> {
             Socket socket = new Socket();
             try {
                 socket.connect(new InetSocketAddress(serverIp, serverPort), 3000);
 
-                ((SocketService) getApplication()).setSocket(socket);
+                ((SocketApp) getApplication()).setSocket(socket);
                 runOnUiThread(() -> {
                     //配置信息持久化存储
                     SharedPreferences.Editor editor = preferences.edit();
@@ -144,10 +148,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException exception) {
                 //连接失败
                 runOnUiThread(() -> {
-                    if (toast != null) {
-                        toast.cancel();
-                    }
-                    toast = Toast.makeText(getApplicationContext(), R.string.error_conn_fail, Toast.LENGTH_SHORT);
+                    toast.setText(R.string.error_conn_fail);
                     toast.show();
                 });
                 exception.printStackTrace();
