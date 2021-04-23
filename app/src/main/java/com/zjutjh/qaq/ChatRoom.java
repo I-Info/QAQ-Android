@@ -51,6 +51,7 @@ public class ChatRoom extends AppCompatActivity {
 
     private RecyclerView messageBox;
     private EditText messageLine;
+    private Toast toast;
 
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
@@ -86,10 +87,10 @@ public class ChatRoom extends AppCompatActivity {
         });
 
         //回车发送
-        messageLine.setOnEditorActionListener((v, actionId, event) -> {
-            sendMessage(v);
-            return false;
-        });
+//        messageLine.setOnEditorActionListener((v, actionId, event) -> {
+//            sendMessage(v);
+//            return false;
+//        });
 
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -121,7 +122,13 @@ public class ChatRoom extends AppCompatActivity {
                     //开始连接，连接超时时间3000ms
                     if (socket == null || !socket.isConnected())
                         throw new Exception("Connect error");
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.conn_success, Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        if (toast != null) {
+                            toast.cancel();
+                        }
+                        toast = Toast.makeText(getApplicationContext(), R.string.conn_success, Toast.LENGTH_SHORT);
+                        toast.show();
+                    });
 
                     //初始化输入输出流对象
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -181,7 +188,11 @@ public class ChatRoom extends AppCompatActivity {
                         //读取失败,说明连接已断开。
                         exception.printStackTrace();
                         runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT).show();
+                            if (toast != null) {
+                                toast.cancel();
+                            }
+                            toast = Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT);
+                            toast.show();
                             finish();
                         });
                     }
@@ -231,7 +242,13 @@ public class ChatRoom extends AppCompatActivity {
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> {
+                            if (toast != null) {
+                                toast.cancel();
+                                toast = Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        });
                     }
 
 
@@ -252,7 +269,14 @@ public class ChatRoom extends AppCompatActivity {
                             tempList.add(qMessage);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT).show());
+                            System.out.println(rawMessage);
+                            runOnUiThread(() -> {
+                                if (toast != null) {
+                                    toast.cancel();
+                                    toast = Toast.makeText(getApplicationContext(), R.string.error_invalid_msg, Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            });
                         }
                     }
 
@@ -291,13 +315,22 @@ public class ChatRoom extends AppCompatActivity {
                 } catch (IOException exception) {
                     //发送失败，说明已断开连接
                     exception.printStackTrace();
-                    finish();
+                    runOnUiThread(() -> {
+                        if (toast != null) {
+                            toast.cancel();
+                        }
+                        toast = Toast.makeText(getApplicationContext(), R.string.error_conn_lost, Toast.LENGTH_SHORT);
+                        toast.show();
+                        finish();
+                    });
                 }
             }).start();
             @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
             qMessageList.add(qMessage);
             messageAdapter.notifyItemInserted(qMessageList.size() - 1);
             messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+            InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

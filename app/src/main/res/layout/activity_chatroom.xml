@@ -19,7 +19,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:background="#00FFFFFF"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,18 +30,18 @@
         <EditText
             android:id="@+id/messageLine"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/message_input"
-            android:inputType="textPersonName" />
+            android:inputType="textShortMessage|textAutoCorrect|textMultiLine" />
 
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="94dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/send_button"
@@ -49,6 +49,7 @@
             android:theme="@style/RippleWhite"
             android:tint="#81D4FA"
             android:translationX="-3dp"
+            android:translationY="7dp"
             app:srcCompat="@android:drawable/ic_menu_send" />
 
     </LinearLayout>
