@@ -1,5 +1,6 @@
 package com.zjutjh.qaq;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.widget.Toast;
 
@@ -12,15 +13,16 @@ public class SocketApp extends Application {
     private Toast toast3 = null;
 
 
+    @SuppressLint("ShowToast")
     @Override
     public void onCreate() {
         super.onCreate();
-        toast1 = new Toast(getApplicationContext());
-        toast1.setDuration(Toast.LENGTH_SHORT);
-        toast2 = new Toast(getApplicationContext());
-        toast2.setDuration(Toast.LENGTH_SHORT);
-        toast3 = new Toast(getApplicationContext());
-        toast3.setDuration(Toast.LENGTH_SHORT);
+        toast1 = Toast.makeText(getApplicationContext(), "toast1", Toast.LENGTH_SHORT);
+
+        toast2 = Toast.makeText(getApplicationContext(), "toast2", Toast.LENGTH_SHORT);
+
+        toast3 = Toast.makeText(getApplicationContext(), "toast3", Toast.LENGTH_SHORT);
+
     }
 
     public Socket getSocket() {
