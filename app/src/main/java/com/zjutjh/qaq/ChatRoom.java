@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,15 +38,12 @@ import java.util.List;
 
 
 public class ChatRoom extends AppCompatActivity {
+    private final List<QMessage> qMessageList = new ArrayList<>();
     private String username;
-
     private Socket socket;
     private Thread thread;
-
     private BufferedReader bufferedReader = null;
     private OutputStream outputStream = null;
-
-    private final List<QMessage> qMessageList = new ArrayList<>();
     private MessageAdapter messageAdapter;
     private LinearLayoutManager layoutManager;
 
@@ -136,18 +134,17 @@ public class ChatRoom extends AppCompatActivity {
 
 
                     //消息读取
-                    char[] contentChar = new char[1024];
-                    String content;
+                    char[] content = new char[1024];
+
                     StringBuilder packageMessage = new StringBuilder();
                     boolean startFlag = false;
                     try {
                         //不断读取新消息，出现异常即停止。
-                        while (bufferedReader.read(contentChar) != -1) {
-                            content = String.valueOf(contentChar);
+                        while (bufferedReader.read(content) != -1) {
                             //解包循环，逐字符处理
-                            for (int index = 0; index < content.length(); index++) {
+                            for (char c : content) {
                                 try {
-                                    if (content.charAt(index) == '{') {
+                                    if (c == '{') {
                                         if (startFlag) {
                                             //异常情况，丢弃之前的message，抛出错误
                                             packageMessage = new StringBuilder();
@@ -156,16 +153,17 @@ public class ChatRoom extends AppCompatActivity {
                                             //message开始
                                             startFlag = true;
                                         }
-                                    } else if (content.charAt(index) == '}' && startFlag) {
+                                    } else if (c == '}' && startFlag) {
                                         //message结束
                                         startFlag = false;
                                         messageHandler(packageMessage.toString());
                                         packageMessage = new StringBuilder();
 
-
                                     } else if (startFlag) {
                                         //正常情况将字符添加到message
-                                        packageMessage.append(content.charAt(index));
+                                        packageMessage.append(c);
+                                    } else if (c == '\0') {
+                                        break;//到达C形字符串末尾，退出循环
                                     }
 
                                 } catch (Exception exception) {
@@ -177,7 +175,7 @@ public class ChatRoom extends AppCompatActivity {
                                     exception.printStackTrace();
                                 }
                             }
-
+                            content = new char[1024];//清空
                         }
                         throw new IOException("Buffer read end");
                     } catch (
@@ -240,6 +238,7 @@ public class ChatRoom extends AppCompatActivity {
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Log.d("raw", rawMessage);
                         runOnUiThread(() -> {
                             Toast toast = ((SocketApp) getApplication()).getToast3();
                             toast.setText(R.string.error_invalid_msg);
@@ -265,7 +264,7 @@ public class ChatRoom extends AppCompatActivity {
                             tempList.add(qMessage);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            System.out.println(rawMessage);
+                            Log.d("raw", rawMessage);
                             runOnUiThread(() -> {
                                 Toast toast = ((SocketApp) getApplication()).getToast3();
                                 toast.setText(R.string.error_invalid_msg);

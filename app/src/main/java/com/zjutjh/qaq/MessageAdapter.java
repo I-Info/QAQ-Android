@@ -3,7 +3,6 @@ package com.zjutjh.qaq;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +54,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView msgBox;
         TextView name;
         TextView time;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             msgBox = itemView.findViewById(R.id.msg_box);
