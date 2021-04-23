@@ -159,11 +159,12 @@ public class ChatRoom extends AppCompatActivity {
                                         messageHandler(packageMessage.toString());
                                         packageMessage = new StringBuilder();
 
+                                    } else if (c == '\0') {
+//                                        System.out.println(content);
+                                        break;//到达C字符串末尾，退出循环
                                     } else if (startFlag) {
                                         //正常情况将字符添加到message
                                         packageMessage.append(c);
-                                    } else if (c == '\0') {
-                                        break;//到达C形字符串末尾，退出循环
                                     }
 
                                 } catch (Exception exception) {
