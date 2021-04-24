@@ -41,6 +41,7 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:autoLink="all"
+            android:maxWidth="300dp"
             android:textColor="@color/white"
             android:textIsSelectable="true" />
 
