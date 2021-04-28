@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             textServerPort.setText(String.valueOf(preferences.getInt(SERVER_PORT, 0)));
             textUsername.setText(preferences.getString(USERNAME, null));
         }
-
     }
 
     @Override

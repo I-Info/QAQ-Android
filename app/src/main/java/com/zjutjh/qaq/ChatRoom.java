@@ -124,7 +124,7 @@ public class ChatRoom extends AppCompatActivity {
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationChannel notificationChannel = new NotificationChannel("Default Channel", getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager.IMPORTANCE_HIGH);
         notificationManager.createNotificationChannel(notificationChannel);
         builder = new NotificationCompat.Builder(this, "Default Channel");
         Log.d("size", String.valueOf(qMessageList.size()));
