@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class QMessage {
     public static final int TYPE_LEFT = 0x0;
     public static final int TYPE_RIGHT = 0x1;
+    public static final int TYPE_BLANK = 0x10;
 
     private final int msgType;
 

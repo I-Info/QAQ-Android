@@ -85,6 +85,8 @@ public class ChatRoom extends AppCompatActivity {
             return false;
         });
 
+        qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));//占位
+        messageAdapter.notifyItemInserted(0);
 
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -92,8 +94,7 @@ public class ChatRoom extends AppCompatActivity {
                 NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(notificationChannel);
         builder = new NotificationCompat.Builder(this, "Default Channel");
-
-
+        Log.d("size", String.valueOf(qMessageList.size()));
     }
 
 
@@ -117,7 +118,7 @@ public class ChatRoom extends AppCompatActivity {
                     if (socket == null || !socket.isConnected())
                         throw new Exception("Connect error");
                     runOnUiThread(() -> {
-
+                        ((SocketApp) getApplication()).getToast1().cancel();
                         toast.setText(R.string.conn_success);
                         toast.show();
                     });
@@ -214,8 +215,15 @@ public class ChatRoom extends AppCompatActivity {
                                 new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
 
                         runOnUiThread(() -> {
-                            qMessageList.add(qMessage);
-                            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
+                            int size = qMessageList.size();
+                            qMessageList.add(size - 1, qMessage);
+                            size++;
+                            messageAdapter.notifyItemInserted(size - 2);
+                            messageAdapter.notifyItemRangeChanged(size - 2, 2);
+                            //接收新消息的滚动条件
+                            int pos = (size - 2) - layoutManager.findLastVisibleItemPosition();
+                            if (pos <= 8)
+                                messageBox.smoothScrollToPosition(size - 1);
 
                             //发送通知
                             builder.setTicker(qMessage.getContent());
@@ -232,10 +240,6 @@ public class ChatRoom extends AppCompatActivity {
 
                             notificationManager.notify(1, builder.build());
 
-
-                            //接收新消息的滚动条件
-                            if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 8)
-                                messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -276,8 +280,9 @@ public class ChatRoom extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
+                        qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
                         messageAdapter.notifyDataSetChanged();
-                        messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+                        messageBox.scrollToPosition(qMessageList.size() - 1);
                     });
 
                 }
@@ -317,9 +322,12 @@ public class ChatRoom extends AppCompatActivity {
                 }
             }).start();
             @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
-            qMessageList.add(qMessage);
-            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+            int size = qMessageList.size();
+            messageBox.smoothScrollToPosition(size - 1);
+            qMessageList.add(size - 1, qMessage);
+            size++;
+            messageAdapter.notifyItemInserted(size - 2);
+            messageAdapter.notifyItemRangeChanged(size - 2, 2);
         }
     }
 
