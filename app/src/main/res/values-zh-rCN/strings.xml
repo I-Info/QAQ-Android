@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QAQ</string>
-    <string name="server_IP">服务器IP地址</string>
+    <string name="server_name">主机名</string>
     <string name="server_port">端口</string>
     <string name="config_server_info">配置信息：</string>
     <string name="user_name">用户名</string>
@@ -17,9 +17,9 @@
     <string name="conn_success">连接成功</string>
     <string name="error_conn_fail">连接失败</string>
     <string name="conn">连接中..</string>
-    <string name="require_ip">请输入服务器IP地址</string>
+    <string name="require_ip">请输入主机名</string>
     <string name="require_port">请输入服务器端口</string>
     <string name="invalid_user">用户名无效</string>
-    <string name="invalid_ip">IP地址无效</string>
+    <string name="invalid_server_name">主机名无效</string>
     <string name="invalid_port">端口号无效</string>
 </resources>

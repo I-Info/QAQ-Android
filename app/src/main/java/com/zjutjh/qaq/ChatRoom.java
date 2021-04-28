@@ -8,10 +8,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,11 +50,13 @@ public class ChatRoom extends AppCompatActivity {
     private OutputStream outputStream = null;
     private MessageAdapter messageAdapter;
     private LinearLayoutManager layoutManager;
+    private DisplayMetrics displayMetrics;
+    private FloatingActionButton scrollButton;
+    private boolean visible = false;
 
     private RecyclerView messageBox;
     private EditText messageLine;
     private Toast toast;
-
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
 
@@ -66,6 +72,7 @@ public class ChatRoom extends AppCompatActivity {
         username = intent.getStringExtra(MainActivity.USERNAME);
 
         messageLine = findViewById(R.id.messageLine);
+        scrollButton = findViewById(R.id.scroll_button);
 
         toast = ((SocketApp) getApplication()).getToast2();
 
@@ -85,15 +92,42 @@ public class ChatRoom extends AppCompatActivity {
             return false;
         });
 
+        displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft());
+        messageBox.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int distance = 0;
+
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!visible && distance > 100 && (qMessageList.size() - 2) - layoutManager.findLastVisibleItemPosition() > 2) {
+                    visible = true;
+                    runOnUiThread(() -> scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3)));
+                    scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
+                    distance = 0;
+                } else if (visible && distance < -100 || (qMessageList.size() - 2) - layoutManager.findLastVisibleItemPosition() <= 2) {
+                    visible = false;
+                    runOnUiThread(() -> scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3)));
+                    distance = 0;
+                }
+                if ((visible && dy < 0) || (!visible && dy > 0)) {
+                    distance += dy;
+                }
+            }
+        });
+
+        qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));//占位
+        messageAdapter.notifyItemInserted(0);
 
         //Notification Service
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationChannel notificationChannel = new NotificationChannel("Default Channel", getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager.IMPORTANCE_HIGH);
         notificationManager.createNotificationChannel(notificationChannel);
         builder = new NotificationCompat.Builder(this, "Default Channel");
-
-
+        Log.d("size", String.valueOf(qMessageList.size()));
     }
 
 
@@ -117,7 +151,7 @@ public class ChatRoom extends AppCompatActivity {
                     if (socket == null || !socket.isConnected())
                         throw new Exception("Connect error");
                     runOnUiThread(() -> {
-
+                        ((SocketApp) getApplication()).getToast1().cancel();
                         toast.setText(R.string.conn_success);
                         toast.show();
                     });
@@ -214,8 +248,19 @@ public class ChatRoom extends AppCompatActivity {
                                 new String(Base64.getDecoder().decode(messageArray[3]), StandardCharsets.UTF_8), QMessage.TYPE_LEFT);
 
                         runOnUiThread(() -> {
-                            qMessageList.add(qMessage);
-                            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
+                            int size = qMessageList.size();
+                            qMessageList.add(size - 1, qMessage);
+                            size++;
+                            messageAdapter.notifyItemInserted(size - 2);
+                            messageAdapter.notifyItemRangeChanged(size - 2, 2);
+                            //接收新消息的滚动条件
+                            int pos = (size - 2) - layoutManager.findLastVisibleItemPosition();
+                            if (pos <= 8)
+                                messageBox.smoothScrollToPosition(size - 1);
+                            else if (!visible) {
+                                scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
+                                visible = true;
+                            }
 
                             //发送通知
                             builder.setTicker(qMessage.getContent());
@@ -232,10 +277,6 @@ public class ChatRoom extends AppCompatActivity {
 
                             notificationManager.notify(1, builder.build());
 
-
-                            //接收新消息的滚动条件
-                            if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 8)
-                                messageBox.smoothScrollToPosition(qMessageList.size() - 1);
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -276,8 +317,9 @@ public class ChatRoom extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
+                        qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
                         messageAdapter.notifyDataSetChanged();
-                        messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+                        messageBox.scrollToPosition(qMessageList.size() - 1);
                     });
 
                 }
@@ -317,9 +359,12 @@ public class ChatRoom extends AppCompatActivity {
                 }
             }).start();
             @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
-            qMessageList.add(qMessage);
-            messageAdapter.notifyItemInserted(qMessageList.size() - 1);
-            messageBox.smoothScrollToPosition(qMessageList.size() - 1);
+            int size = qMessageList.size();
+            messageBox.smoothScrollToPosition(size - 1);
+            qMessageList.add(size - 1, qMessage);
+            size++;
+            messageAdapter.notifyItemInserted(size - 2);
+            messageAdapter.notifyItemRangeChanged(size - 2, 2);
         }
     }
 
@@ -351,6 +396,12 @@ public class ChatRoom extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.default_menu, menu);
         return true;
+    }
+
+    public void scrollToBottom(View view) {
+        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
+//        visible = false;
+        messageBox.smoothScrollToPosition(qMessageList.size() - 1);
     }
 
     @Override

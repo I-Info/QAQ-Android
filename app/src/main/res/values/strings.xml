@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">QAQ</string>
-    <string name="server_IP">Server IPv4 address</string>
+    <string name="server_name">Host name</string>
     <string name="server_port">Port</string>
     <string name="config_server_info">Config:</string>
     <string name="user_name">Username</string>
@@ -8,7 +8,7 @@
     <string name="message_input">Input message</string>
     <string name="send_button">send</string>
     <string name="app_about">About</string>
-    <string name="about_message_title" translatable="false">QAQ v1.1.5(build14)</string>
+    <string name="about_message_title" translatable="false">QAQ v1.2.0(build15)</string>
     <string name="about_message_developer">Client developed by I_Info, Server developed by Node Sans</string>
     <string name="about_message_thank">Special thanks to Sink</string>
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>
@@ -18,9 +18,10 @@
     <string name="conn_success">Connected</string>
     <string name="error_conn_fail">Connect failed</string>
     <string name="conn">Connecting…</string>
-    <string name="require_ip">Please input server IP address</string>
+    <string name="require_ip">Please input host name</string>
     <string name="require_port">Please input server port</string>
     <string name="invalid_user">Invalid username</string>
-    <string name="invalid_ip">Invalid IP address</string>
+    <string name="invalid_server_name">Invalid host name</string>
     <string name="invalid_port">Invalid server port</string>
+    <string name="to_bottom" translatable="false">to bottom</string>
 </resources>

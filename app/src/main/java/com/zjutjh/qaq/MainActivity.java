@@ -1,5 +1,6 @@
 package com.zjutjh.qaq;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.regex.Pattern;
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "com.zjutjh.qaq";
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textServerIp;
     private EditText textServerPort;
     private EditText textUsername;
+    private ProgressBar progressBar;
 
     private Thread thread;
     private Toast toast;
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         textServerIp = findViewById(R.id.serverIp);
         textServerPort = findViewById(R.id.serverPort);
         textUsername = findViewById(R.id.username);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
         toast = ((SocketApp) getApplication()).getToast1();
 
@@ -72,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             textServerPort.setText(String.valueOf(preferences.getInt(SERVER_PORT, 0)));
             textUsername.setText(preferences.getString(USERNAME, null));
         }
-
     }
 
     @Override
@@ -87,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         serverIp = textServerIp.getText().toString();
         String portString = textServerPort.getText().toString();
         username = textUsername.getText().toString();
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
         if (serverIp.equals("")) {
             textServerIp.setError(getString(R.string.require_ip));
@@ -109,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String regExp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
-        Pattern pattern = Pattern.compile(regExp);
-        if (!pattern.matcher(serverIp).matches()) {
-            textServerIp.setError(getString(R.string.invalid_ip));
-            return;
-        }
+//        String regExp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+//        Pattern pattern = Pattern.compile(regExp);
+//        if (!pattern.matcher(serverIp).matches()) {
+//            textServerIp.setError(getString(R.string.invalid_ip));
+//            return;
+//        }
 
         //预先测试连接:
         if (thread != null && thread.isAlive()) {
@@ -125,8 +132,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         toast.setText(R.string.conn);
         toast.show();
+
         thread = new Thread(() -> {
             Socket socket = new Socket();
             try {
@@ -140,20 +149,30 @@ public class MainActivity extends AppCompatActivity {
                     editor.putInt(SERVER_PORT, serverPort);
                     editor.putString(USERNAME, username);
                     editor.apply();
+                    progressBar.setVisibility(View.GONE);
                     Log.i(TAG, "Config saved");
                     Intent intent = new Intent(this, ChatRoom.class);
                     intent.putExtra(USERNAME, username);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 });
+            } catch (UnknownHostException exception) {
+                exception.printStackTrace();
+                runOnUiThread(() -> {
+                    toast.cancel();
+                    textServerIp.setError(getString(R.string.invalid_server_name));
+                    progressBar.setVisibility(View.GONE);
+                });
             } catch (IOException exception) {
                 //连接失败
                 runOnUiThread(() -> {
+                    toast.cancel();
+                    Toast toast = ((SocketApp) getApplication()).getToast2();
                     toast.setText(R.string.error_conn_fail);
                     toast.show();
+                    progressBar.setVisibility(View.GONE);
                 });
                 exception.printStackTrace();
             }
-
         });
         thread.start();
 
