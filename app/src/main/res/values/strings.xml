@@ -8,7 +8,7 @@
     <string name="message_input">Input message</string>
     <string name="send_button">send</string>
     <string name="app_about">About</string>
-    <string name="about_message_title" translatable="false">QAQ v1.2.0(build15)</string>
+    <string name="about_message_title" translatable="false">QAQ v1.2.0(build16)</string>
     <string name="about_message_developer">Client developed by I_Info, Server developed by Node Sans</string>
     <string name="about_message_thank">Special thanks to Sink</string>
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>

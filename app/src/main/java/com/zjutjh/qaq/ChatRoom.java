@@ -102,27 +102,33 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!visible && distance > 100 && (qMessageList.size() - 2) - layoutManager.findLastVisibleItemPosition() > 2) {
+                if (!visible && distance > 100 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 1) {
                     visible = true;
                     runOnUiThread(() -> scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3)));
                     scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if (visible && distance < -100 || (qMessageList.size() - 2) - layoutManager.findLastVisibleItemPosition() <= 2) {
+                } else if (visible && (distance < -100 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1)) {
                     visible = false;
                     runOnUiThread(() -> scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3)));
                     distance = 0;
                 }
+
                 if ((visible && dy < 0) || (!visible && dy > 0)) {
                     distance += dy;
                 }
             }
         });
 
-        qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));//占位
+        qMessageList.add(new
+
+                QMessage(null, null, null, QMessage.TYPE_BLANK));//占位
         messageAdapter.notifyItemInserted(0);
 
         //Notification Service
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager)
+
+                getSystemService(NOTIFICATION_SERVICE);
+
         NotificationChannel notificationChannel = new NotificationChannel("Default Channel", getString(R.string.app_name),
                 NotificationManager.IMPORTANCE_HIGH);
         notificationManager.createNotificationChannel(notificationChannel);
@@ -399,7 +405,7 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     public void scrollToBottom(View view) {
-        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
+//        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
 //        visible = false;
         messageBox.smoothScrollToPosition(qMessageList.size() - 1);
     }
