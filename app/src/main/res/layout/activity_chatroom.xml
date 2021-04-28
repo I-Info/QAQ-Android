@@ -20,7 +20,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
+        android:background="@drawable/border"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintCircleRadius="20dp"
@@ -42,16 +42,18 @@
 
         <ImageButton
             android:id="@+id/sendButton"
-            android:layout_width="94dp"
+            android:layout_width="76dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/send_button"
+            android:cropToPadding="false"
             android:onClick="sendMessage"
+            android:scaleType="center"
             android:theme="@style/RippleWhite"
             android:tint="#4DC7FF"
             android:translationX="-3dp"
-            android:translationY="7dp"
             app:srcCompat="@android:drawable/ic_menu_send" />
 
     </LinearLayout>
