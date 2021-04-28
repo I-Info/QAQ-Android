@@ -60,4 +60,27 @@
 
     </LinearLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/scroll_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/to_bottom"
+        android:foregroundGravity="center"
+        android:onClick="scrollToBottom"
+        android:pointerIcon="zoom_in"
+        android:scaleType="center"
+        app:backgroundTint="#FFFFFF"
+        app:elevation="2dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="1dp"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.862"
+        app:srcCompat="@android:drawable/stat_sys_download"
+        app:useCompatPadding="false" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
