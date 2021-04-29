@@ -66,11 +66,14 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="@string/to_bottom"
+        android:foreground="@drawable/ic_baseline_keyboard_arrow_down_24"
         android:foregroundGravity="center"
+        android:foregroundTint="@color/button_front"
         android:onClick="scrollToBottom"
         android:pointerIcon="zoom_in"
         android:scaleType="center"
-        app:backgroundTint="#FFFFFF"
+        android:tint="@color/button_front"
+        app:backgroundTint="@color/button_back"
         app:elevation="2dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,8 +82,6 @@
         app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.862"
-        app:srcCompat="@android:drawable/stat_sys_download"
-        app:useCompatPadding="false" />
+        app:layout_constraintVertical_bias="0.862" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

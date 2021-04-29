@@ -10,6 +10,8 @@
     <color name="black">#FF000000</color>
     <color name="black_12">#121212</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="button_back">#FFFFFF</color>
+    <color name="button_front">#000000</color>
     <color name="grey">#919191</color>
     <color name="border">#E8E8E8</color>
     <color name="onBackground">#FFFFFF</color>

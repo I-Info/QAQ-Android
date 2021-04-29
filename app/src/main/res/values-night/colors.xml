@@ -4,4 +4,6 @@
     <color name="chatBackground">#121212</color>
     <color name="blue_deeper">#121212</color>
     <color name="border">#222222</color>
+    <color name="button_back">#393939</color>
+    <color name="button_front">#ACACAC</color>
 </resources>
