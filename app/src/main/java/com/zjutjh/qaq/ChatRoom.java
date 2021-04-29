@@ -102,14 +102,15 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!visible && distance > 100 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 1) {
+                if (!visible && distance > 200 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 1) {
                     visible = true;
-                    runOnUiThread(() -> scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3)));
                     scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if (visible && (distance < -100 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1)) {
+                } else if (visible && (distance < -200 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1)) {
                     visible = false;
-                    runOnUiThread(() -> scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3)));
+                    scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
+                    distance = 0;
+                } else if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1) {
                     distance = 0;
                 }
 
