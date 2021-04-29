@@ -53,6 +53,7 @@ public class ChatRoom extends AppCompatActivity {
     private DisplayMetrics displayMetrics;
     private FloatingActionButton scrollButton;
     private boolean visible = false;
+    private int distance = 0;
 
     private RecyclerView messageBox;
     private EditText messageLine;
@@ -92,12 +93,14 @@ public class ChatRoom extends AppCompatActivity {
             return false;
         });
 
+        //获取屏幕宽度信息
         displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        //初始状态自动滚动按钮隐藏
         scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft());
-        messageBox.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            private int distance = 0;
 
+        //监听RecyclerView滚动事件,根据滚动数据来控制自动滚动按钮状态
+        messageBox.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -121,7 +124,6 @@ public class ChatRoom extends AppCompatActivity {
         });
 
         qMessageList.add(new
-
                 QMessage(null, null, null, QMessage.TYPE_BLANK));//占位
         messageAdapter.notifyItemInserted(0);
 
@@ -267,6 +269,7 @@ public class ChatRoom extends AppCompatActivity {
                             else if (!visible) {
                                 scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
                                 visible = true;
+                                distance = 0;
                             }
 
                             //发送通知
@@ -278,6 +281,7 @@ public class ChatRoom extends AppCompatActivity {
                             builder.setWhen(System.currentTimeMillis());
                             builder.setDefaults(NotificationCompat.DEFAULT_ALL);
 
+                            //点击通知
                             Intent intent = new Intent(getApplicationContext(), ChatRoom.class);
                             PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                             builder.setContentIntent(pi);
@@ -367,11 +371,11 @@ public class ChatRoom extends AppCompatActivity {
             }).start();
             @SuppressLint("SimpleDateFormat") QMessage qMessage = new QMessage(username, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), msg, QMessage.TYPE_RIGHT);
             int size = qMessageList.size();
-            messageBox.smoothScrollToPosition(size - 1);
             qMessageList.add(size - 1, qMessage);
             size++;
             messageAdapter.notifyItemInserted(size - 2);
             messageAdapter.notifyItemRangeChanged(size - 2, 2);
+            messageBox.smoothScrollToPosition(size - 1);
         }
     }
 
