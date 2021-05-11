@@ -116,13 +116,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-//        String regExp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
-//        Pattern pattern = Pattern.compile(regExp);
-//        if (!pattern.matcher(serverIp).matches()) {
-//            textServerIp.setError(getString(R.string.invalid_ip));
-//            return;
-//        }
-
         //预先测试连接:
         if (thread != null && thread.isAlive()) {
             return;

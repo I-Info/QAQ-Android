@@ -228,7 +228,6 @@ public class ChatRoom extends AppCompatActivity {
                     } catch (
                             IOException exception) {
                         //读取失败,说明连接已断开。
-                        exception.printStackTrace();
                         socket.close();
                         ((SocketApp) getApplication()).setSocket(null);
                         runOnUiThread(() -> {
@@ -335,6 +334,11 @@ public class ChatRoom extends AppCompatActivity {
                         qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
                         messageAdapter.notifyDataSetChanged();
                         messageBox.scrollToPosition(qMessageList.size() - 1);
+
+                        //获取历史记录成功，也是连接成功的标志
+                        Toast toast = ((SocketApp) getApplication()).getToast4();
+                        toast.setText(R.string.get_success);
+                        toast.show();
                         progressBar.setVisibility(View.GONE);
                     });
 
