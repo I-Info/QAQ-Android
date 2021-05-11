@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class ChatRoom extends AppCompatActivity {
 
     private RecyclerView messageBox;
     private EditText messageLine;
+    private ProgressBar progressBar;
     private Toast toast;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
@@ -74,6 +76,7 @@ public class ChatRoom extends AppCompatActivity {
 
         messageLine = findViewById(R.id.messageLine);
         scrollButton = findViewById(R.id.scroll_button);
+        progressBar = findViewById(R.id.loadingProgress);
 
         toast = ((SocketApp) getApplication()).getToast2();
 
@@ -331,6 +334,7 @@ public class ChatRoom extends AppCompatActivity {
                         qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
                         messageAdapter.notifyDataSetChanged();
                         messageBox.scrollToPosition(qMessageList.size() - 1);
+                        progressBar.setVisibility(View.GONE);
                     });
 
                 }
@@ -416,8 +420,6 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     public void scrollToBottom(View view) {
-//        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
-//        visible = false;
         messageBox.smoothScrollToPosition(qMessageList.size() - 1);
     }
 
@@ -428,6 +430,9 @@ public class ChatRoom extends AppCompatActivity {
             socket.shutdownInput();//关闭输入流来关闭socket服务线程
         } catch (Exception exception) {
             exception.printStackTrace();
+            Toast toast = ((SocketApp) getApplication()).getToast3();
+            toast.setText("Socket already closed");
+            toast.show();
         }
     }
 }
