@@ -8,7 +8,7 @@
     <string name="message_input">Input message</string>
     <string name="send_button">send</string>
     <string name="app_about">About</string>
-    <string name="about_message_title" translatable="false">QAQ v1.2.1(build17)</string>
+    <string name="about_message_title" translatable="false">QAQ v1.2.2(build18)</string>
     <string name="about_message_developer">Client developed by I_Info, Server developed by Node Sans</string>
     <string name="about_message_thank">Special thanks to Sink</string>
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>
@@ -24,4 +24,5 @@
     <string name="invalid_server_name">Invalid host name</string>
     <string name="invalid_port">Invalid server port</string>
     <string name="to_bottom" translatable="false">to bottom</string>
+    <string name="error_msg_too_long">message is too long :( [>500]</string>
 </resources>

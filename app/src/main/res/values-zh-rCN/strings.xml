@@ -22,4 +22,5 @@
     <string name="invalid_user">用户名无效</string>
     <string name="invalid_server_name">主机名无效</string>
     <string name="invalid_port">端口号无效</string>
+    <string name="error_msg_too_long">消息过长 :( [>500]</string>
 </resources>

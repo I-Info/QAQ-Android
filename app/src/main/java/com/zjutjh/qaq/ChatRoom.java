@@ -105,15 +105,15 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!visible && distance > 200 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 1) {
+                if (!visible && distance > 200 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 0) {
                     visible = true;
                     scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if (visible && (distance < -200 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1)) {
+                } else if (visible && (distance < -200 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 0)) {
                     visible = false;
                     scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1) {
+                } else if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 0) {
                     distance = 0;
                 }
 
@@ -348,6 +348,12 @@ public class ChatRoom extends AppCompatActivity {
             StringBuilder msgBil = new StringBuilder();
             String msg = messageLine.getText().toString().trim();
             if (msg.isEmpty()) {
+                return;
+            }
+            //消息长度限制
+            if (msg.length() >= 500) {
+                toast.setText(R.string.error_msg_too_long);
+                toast.show();
                 return;
             }
             messageLine.setText("");
