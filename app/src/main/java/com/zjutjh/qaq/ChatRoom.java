@@ -232,6 +232,7 @@ public class ChatRoom extends AppCompatActivity {
                         socket.close();
                         ((SocketApp) getApplication()).setSocket(null);
                         runOnUiThread(() -> {
+                            Toast toast = ((SocketApp) getApplication()).getToast3();
                             toast.setText(R.string.error_conn_lost);
                             toast.show();
                             finish();
@@ -430,9 +431,6 @@ public class ChatRoom extends AppCompatActivity {
             socket.shutdownInput();//关闭输入流来关闭socket服务线程
         } catch (Exception exception) {
             exception.printStackTrace();
-            Toast toast = ((SocketApp) getApplication()).getToast3();
-            toast.setText("Socket already closed");
-            toast.show();
         }
     }
 }
