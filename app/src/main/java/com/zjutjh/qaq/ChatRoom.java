@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class ChatRoom extends AppCompatActivity {
 
     private RecyclerView messageBox;
     private EditText messageLine;
+    private ProgressBar progressBar;
     private Toast toast;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
@@ -74,6 +76,7 @@ public class ChatRoom extends AppCompatActivity {
 
         messageLine = findViewById(R.id.messageLine);
         scrollButton = findViewById(R.id.scroll_button);
+        progressBar = findViewById(R.id.loadingProgress);
 
         toast = ((SocketApp) getApplication()).getToast2();
 
@@ -105,15 +108,15 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!visible && distance > 200 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 1) {
+                if (!visible && distance > 200 && (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() > 0) {
                     visible = true;
                     scrollButton.animate().translationX(0).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if (visible && (distance < -200 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1)) {
+                } else if (visible && (distance < -200 || (qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 0)) {
                     visible = false;
                     scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
                     distance = 0;
-                } else if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 1) {
+                } else if ((qMessageList.size() - 1) - layoutManager.findLastVisibleItemPosition() <= 0) {
                     distance = 0;
                 }
 
@@ -225,10 +228,10 @@ public class ChatRoom extends AppCompatActivity {
                     } catch (
                             IOException exception) {
                         //读取失败,说明连接已断开。
-                        exception.printStackTrace();
                         socket.close();
                         ((SocketApp) getApplication()).setSocket(null);
                         runOnUiThread(() -> {
+                            Toast toast = ((SocketApp) getApplication()).getToast3();
                             toast.setText(R.string.error_conn_lost);
                             toast.show();
                             finish();
@@ -331,6 +334,12 @@ public class ChatRoom extends AppCompatActivity {
                         qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
                         messageAdapter.notifyDataSetChanged();
                         messageBox.scrollToPosition(qMessageList.size() - 1);
+
+                        //获取历史记录成功，也是连接成功的标志
+                        Toast toast = ((SocketApp) getApplication()).getToast4();
+                        toast.setText(R.string.get_success);
+                        toast.show();
+                        progressBar.setVisibility(View.GONE);
                     });
 
                 }
@@ -348,6 +357,12 @@ public class ChatRoom extends AppCompatActivity {
             StringBuilder msgBil = new StringBuilder();
             String msg = messageLine.getText().toString().trim();
             if (msg.isEmpty()) {
+                return;
+            }
+            //消息长度限制
+            if (msg.length() >= 500) {
+                toast.setText(R.string.error_msg_too_long);
+                toast.show();
                 return;
             }
             messageLine.setText("");
@@ -410,8 +425,6 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     public void scrollToBottom(View view) {
-//        scrollButton.animate().translationX(displayMetrics.widthPixels - scrollButton.getLeft()).setInterpolator(new DecelerateInterpolator(3));
-//        visible = false;
         messageBox.smoothScrollToPosition(qMessageList.size() - 1);
     }
 

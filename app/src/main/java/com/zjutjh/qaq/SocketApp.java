@@ -11,6 +11,7 @@ public class SocketApp extends Application {
     private Toast toast1 = null;
     private Toast toast2 = null;
     private Toast toast3 = null;
+    private Toast toast4 = null;
 
 
     @SuppressLint("ShowToast")
@@ -23,6 +24,7 @@ public class SocketApp extends Application {
 
         toast3 = Toast.makeText(getApplicationContext(), "toast3", Toast.LENGTH_SHORT);
 
+        toast4 = Toast.makeText(getApplicationContext(), "toast4", Toast.LENGTH_SHORT);
     }
 
     public Socket getSocket() {
@@ -43,5 +45,9 @@ public class SocketApp extends Application {
 
     public Toast getToast3() {
         return toast3;
+    }
+
+    public Toast getToast4() {
+        return toast4;
     }
 }
