@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setEnterTransition(slideIn);
         getWindow().setExitTransition(slideOut);
 
-        textServerIp = findViewById(R.id.serverIp);
-        textServerPort = findViewById(R.id.serverPort);
+        textServerIp = findViewById(R.id.hostname);
+        textServerPort = findViewById(R.id.port);
         textUsername = findViewById(R.id.username);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chatBackground"
     tools:context=".ChatRoom">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,43 +22,57 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/border"
         android:orientation="horizontal"
+        android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintCircleRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/messageLine"
+        <!--        <EditText-->
+        <!--            android:id="@+id/messageLine"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="10dp"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:autofillHints="messages"-->
+        <!--            android:ems="10"-->
+        <!--            android:hint="@string/message_input"-->
+        <!--            android:inputType="textShortMessage|textAutoCorrect|textMultiLine"-->
+        <!--            android:maxLines="3"-->
+        <!--            android:scrollbars="vertical" />-->
+
+        <!--        <ImageButton-->
+        <!--            android:id="@+id/sendButton"-->
+        <!--            android:layout_width="76dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center_vertical"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:background="?attr/selectableItemBackgroundBorderless"-->
+        <!--            android:contentDescription="@string/send_button"-->
+        <!--            android:cropToPadding="false"-->
+        <!--            android:onClick="sendMessage"-->
+        <!--            android:scaleType="center"-->
+        <!--            android:translationX="-3dp"-->
+        <!--            app:srcCompat="@android:drawable/ic_menu_send"-->
+        <!--            tools:ignore="ImageContrastCheck" />-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/messageInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:autofillHints="messages"
-            android:ems="10"
             android:hint="@string/message_input"
-            android:inputType="textShortMessage|textAutoCorrect|textMultiLine"
-            android:maxLines="3"
-            android:scrollbars="vertical"
-            android:textColorHint="#546E7A" />
+            app:endIconDrawable="@drawable/ic_arrow_forward_24"
+            app:endIconMode="custom"
+            app:endIconCheckable="true"
+            app:endIconContentDescription="@string/send_button">
 
-        <ImageButton
-            android:id="@+id/sendButton"
-            android:layout_width="76dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/send_button"
-            android:cropToPadding="false"
-            android:onClick="sendMessage"
-            android:scaleType="center"
-            android:theme="@style/RippleWhite"
-            android:translationX="-3dp"
-            app:srcCompat="@android:drawable/ic_menu_send"
-            tools:ignore="ImageContrastCheck"
-            app:tint="@color/blue_default" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/messageInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:maxLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -67,18 +80,10 @@
         android:id="@+id/scroll_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:contentDescription="@string/to_bottom"
-        android:foreground="@drawable/ic_baseline_keyboard_arrow_down_24"
         android:foregroundGravity="center"
-        android:foregroundTint="@color/button_front"
         android:onClick="scrollToBottom"
-        android:pointerIcon="zoom_in"
-        android:scaleType="center"
-        android:tint="@color/button_front"
-        app:backgroundTint="@color/button_back"
-        app:elevation="2dp"
-        app:fabSize="mini"
+        android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_min="1dp"
