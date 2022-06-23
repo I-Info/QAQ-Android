@@ -286,7 +286,7 @@ public class ChatRoom extends AppCompatActivity {
 
                             //点击通知
                             Intent intent = new Intent(getApplicationContext(), ChatRoom.class);
-                            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
                             builder.setContentIntent(pi);
 
                             notificationManager.notify(1, builder.build());
@@ -332,7 +332,8 @@ public class ChatRoom extends AppCompatActivity {
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
                         qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
-                        messageAdapter.notifyDataSetChanged();
+//                        messageAdapter.notifyDataSetChanged();
+                        messageAdapter.notifyItemRangeInserted(qMessageList.size() - (tempList.size() + 1), tempList.size() + 1);
                         messageBox.scrollToPosition(qMessageList.size() - 1);
 
                         //获取历史记录成功，也是连接成功的标志

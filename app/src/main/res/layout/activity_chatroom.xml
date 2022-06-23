@@ -41,7 +41,8 @@
             android:hint="@string/message_input"
             android:inputType="textShortMessage|textAutoCorrect|textMultiLine"
             android:maxLines="3"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:textColorHint="#546E7A" />
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -55,9 +56,10 @@
             android:onClick="sendMessage"
             android:scaleType="center"
             android:theme="@style/RippleWhite"
-            android:tint="@color/blue_default"
             android:translationX="-3dp"
-            app:srcCompat="@android:drawable/ic_menu_send" />
+            app:srcCompat="@android:drawable/ic_menu_send"
+            tools:ignore="ImageContrastCheck"
+            app:tint="@color/blue_default" />
 
     </LinearLayout>
 
