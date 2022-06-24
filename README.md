@@ -9,10 +9,10 @@ QAQ Protocol Android Implementation
 [![Android CI](https://github.com/I-Info/QAQ-Android/actions/workflows/android.yml/badge.svg)](https://github.com/I-Info/QAQ-Android/actions/workflows/android.yml)     
 
 ## Screenshots
-![mainpage](assets/mainpage.jpg)
-![chatroom](assets/chatroom.jpg)
-![input](assets/input-message.jpg)
-![notification](assets/notification.jpg)
+<img src="assets/mainpage.jpg" width="45%"/>
+<img src="assets/chatroom.jpg" width="45%"/>
+<img src="assets/input-message.jpg" width="45%"/>
+<img src="assets/notification.jpg" width="45%"/>
 
 
 ## Other QAQ Project
