@@ -208,7 +208,7 @@ public class ChatRoom extends AppCompatActivity {
                     //发送历史记录获取请求
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
-
+                    runOnUiThread(()-> progressBar.setVisibility(View.VISIBLE));
 
                     //消息读取
                     char[] content = new char[1024];
@@ -371,7 +371,7 @@ public class ChatRoom extends AppCompatActivity {
                         Toast toast = ((SocketApp) getApplication()).getToast4();
                         toast.setText(R.string.get_success);
                         toast.show();
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.INVISIBLE);
                     });
 
                 }
