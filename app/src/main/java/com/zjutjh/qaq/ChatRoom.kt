@@ -14,7 +14,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -49,7 +48,7 @@ class ChatRoom : AppCompatActivity() {
     private lateinit var scrollButton: FloatingActionButton
     private var fabVisibility = false
     private var distance = 0
-    private lateinit var messageBox: RecyclerView
+    private lateinit var messageBox: MessageRecycleView
     private lateinit var messageLine: EditText
     private lateinit var messageLayout: TextInputLayout
     private lateinit var progressBar: ProgressBar
@@ -57,7 +56,7 @@ class ChatRoom : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
 
-    @SuppressLint("ClickableViewAccessibility")
+    //    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatroom)
@@ -93,11 +92,11 @@ class ChatRoom : AppCompatActivity() {
         messageBox.adapter = messageAdapter
 
         //点击屏幕上部关闭软键盘
-        messageBox.setOnTouchListener { v: View, _: MotionEvent? ->
-            val imm = applicationContext.getSystemService(
-                INPUT_METHOD_SERVICE
-            ) as InputMethodManager
-            imm.hideSoftInputFromWindow(v.windowToken, 0)
+
+        messageBox.setOnTouchAction {
+            val imm =
+                applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
             messageLine.clearFocus()
             false
         }
