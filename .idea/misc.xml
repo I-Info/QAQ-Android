@@ -7,7 +7,9 @@
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.8818023681640625" />
         <entry key="app/src/main/res/layout/activity_chatroom.xml" value="0.5188834154351396" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5392491467576792" />
+        <entry key="app/src/main/res/layout/msg_blank.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/msg_box_left.xml" value="0.6926223754882812" />
+        <entry key="app/src/main/res/layout/msg_box_right.xml" value="0.34375" />
       </map>
     </option>
   </component>
