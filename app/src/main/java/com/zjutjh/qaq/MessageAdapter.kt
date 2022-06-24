@@ -1,68 +1,56 @@
-package com.zjutjh.qaq;
+package com.zjutjh.qaq
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-    List<QMessage> messageList;
-
-    public MessageAdapter(List<QMessage> messageList) {
-        this.messageList = messageList;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        if (viewType == QMessage.TYPE_LEFT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_box_left, parent, false);
-        } else if (viewType == QMessage.TYPE_RIGHT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_box_right, parent, false);
-        } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_blank, parent, false);
+class MessageAdapter(private var messageList: List<QMessage>) :
+    RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view: View = when (viewType) {
+            QMessage.TYPE_LEFT -> {
+                LayoutInflater.from(parent.context).inflate(R.layout.msg_box_left, parent, false)
+            }
+            QMessage.TYPE_RIGHT -> {
+                LayoutInflater.from(parent.context).inflate(R.layout.msg_box_right, parent, false)
+            }
+            else -> {
+                LayoutInflater.from(parent.context).inflate(R.layout.msg_blank, parent, false)
+            }
         }
-        return new ViewHolder(view);
+        return ViewHolder(view)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //绑定函数
-        QMessage msg = messageList.get(position);
-        if (msg.getType() != QMessage.TYPE_BLANK) {
-            holder.msgBox.setText(msg.getContent());
-            holder.name.setText(msg.getUser());
-            holder.time.setText(msg.getDate());
+        val msg = messageList[position]
+        if (msg.type != QMessage.TYPE_BLANK) {
+            holder.msgBox!!.text = msg.content
+            holder.name!!.text = msg.user
+            holder.time!!.text = msg.date
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return messageList.size();
+    override fun getItemCount(): Int {
+        return messageList.size
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        QMessage msg = messageList.get(position);
-        return msg.getType();
+    override fun getItemViewType(position: Int): Int {
+        val msg = messageList[position]
+        return msg.type
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView msgBox;
-        TextView name;
-        TextView time;
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var msgBox: TextView?
+        var name: TextView?
+        var time: TextView?
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            msgBox = itemView.findViewById(R.id.msg_box);
-            name = itemView.findViewById(R.id.text_name);
-            time = itemView.findViewById(R.id.text_time);
+        init {
+            msgBox = itemView.findViewById(R.id.msg_box)
+            name = itemView.findViewById(R.id.text_name)
+            time = itemView.findViewById(R.id.text_time)
         }
     }
 }

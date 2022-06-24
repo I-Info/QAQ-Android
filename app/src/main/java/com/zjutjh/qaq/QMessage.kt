@@ -1,48 +1,18 @@
-package com.zjutjh.qaq;
+package com.zjutjh.qaq
 
-import org.jetbrains.annotations.NotNull;
-
-public class QMessage {
-    public static final int TYPE_LEFT = 0x0;
-    public static final int TYPE_RIGHT = 0x1;
-    public static final int TYPE_BLANK = 0x10;
-
-    private final int msgType;
-
-    private final String user;
-    private final String date;
-    private final String content;
-
-    public QMessage(String user, String date, String content, int msgType) {
-        this.user = user;
-        this.date = date;
-        this.content = content;
-        this.msgType = msgType;
-    }
-
-    public int getType() {
-        return msgType;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    @Override
-    public @NotNull String toString() {
+class QMessage(val user: String?, val date: String?, val content: String?, val type: Int) {
+    override fun toString(): String {
         return "QMessage{" +
-                "msgType=" + msgType +
+                "msgType=" + type +
                 ", user='" + user + '\'' +
                 ", date='" + date + '\'' +
                 ", content='" + content + '\'' +
-                '}';
+                '}'
+    }
+
+    companion object {
+        const val TYPE_LEFT = 0x0
+        const val TYPE_RIGHT = 0x1
+        const val TYPE_BLANK = 0x10
     }
 }

@@ -1,53 +1,27 @@
-package com.zjutjh.qaq;
+package com.zjutjh.qaq
 
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.widget.Toast;
+import android.annotation.SuppressLint
+import android.app.Application
+import android.widget.Toast
+import java.net.Socket
 
-import java.net.Socket;
-
-public class SocketApp extends Application {
-    private Socket socket = null;
-    private Toast toast1 = null;
-    private Toast toast2 = null;
-    private Toast toast3 = null;
-    private Toast toast4 = null;
-
+class SocketApp : Application() {
+    var socket: Socket? = null
+    lateinit var toast1: Toast
+        private set
+    lateinit var toast2: Toast
+        private set
+    lateinit var toast3: Toast
+        private set
+    lateinit var toast4: Toast
+        private set
 
     @SuppressLint("ShowToast")
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        toast1 = Toast.makeText(getApplicationContext(), "toast1", Toast.LENGTH_SHORT);
-
-        toast2 = Toast.makeText(getApplicationContext(), "toast2", Toast.LENGTH_SHORT);
-
-        toast3 = Toast.makeText(getApplicationContext(), "toast3", Toast.LENGTH_SHORT);
-
-        toast4 = Toast.makeText(getApplicationContext(), "toast4", Toast.LENGTH_SHORT);
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public Toast getToast1() {
-        return toast1;
-    }
-
-    public Toast getToast2() {
-        return toast2;
-    }
-
-    public Toast getToast3() {
-        return toast3;
-    }
-
-    public Toast getToast4() {
-        return toast4;
+    override fun onCreate() {
+        super.onCreate()
+        toast1 = Toast.makeText(applicationContext, "toast1", Toast.LENGTH_SHORT)
+        toast2 = Toast.makeText(applicationContext, "toast2", Toast.LENGTH_SHORT)
+        toast3 = Toast.makeText(applicationContext, "toast3", Toast.LENGTH_SHORT)
+        toast4 = Toast.makeText(applicationContext, "toast4", Toast.LENGTH_SHORT)
     }
 }
