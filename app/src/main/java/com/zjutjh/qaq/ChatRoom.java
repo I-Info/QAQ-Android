@@ -8,6 +8,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -58,6 +61,7 @@ public class ChatRoom extends AppCompatActivity {
 
     private RecyclerView messageBox;
     private EditText messageLine;
+    private TextInputLayout messageLayout;
     private ProgressBar progressBar;
     private Toast toast;
     private NotificationManager notificationManager;
@@ -74,7 +78,33 @@ public class ChatRoom extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra(MainActivity.USERNAME);
 
-        messageLine = findViewById(R.id.messageLine);
+        messageLine = findViewById(R.id.messageInput);
+        messageLayout = findViewById(R.id.messageInputLayout);
+
+
+        // Init message layout behavior
+        messageLayout.addOnEditTextAttachedListener(textInputLayout -> {
+            textInputLayout.setEndIconVisible(false);
+            textInputLayout.setEndIconOnClickListener(this::sendMessage);
+        });
+
+        messageLine.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                messageLayout.setEndIconVisible(messageLine.getText().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         scrollButton = findViewById(R.id.scroll_button);
         progressBar = findViewById(R.id.loadingProgress);
 
@@ -93,6 +123,7 @@ public class ChatRoom extends AppCompatActivity {
         messageBox.setOnTouchListener((v, event) -> {
             InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            messageLine.clearFocus();
             return false;
         });
 
@@ -177,7 +208,7 @@ public class ChatRoom extends AppCompatActivity {
                     //发送历史记录获取请求
                     outputStream.write("{msg&;list}".getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
-
+                    runOnUiThread(()-> progressBar.setVisibility(View.VISIBLE));
 
                     //消息读取
                     char[] content = new char[1024];
@@ -286,7 +317,7 @@ public class ChatRoom extends AppCompatActivity {
 
                             //点击通知
                             Intent intent = new Intent(getApplicationContext(), ChatRoom.class);
-                            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
                             builder.setContentIntent(pi);
 
                             notificationManager.notify(1, builder.build());
@@ -332,14 +363,15 @@ public class ChatRoom extends AppCompatActivity {
                     runOnUiThread(() -> {
                         qMessageList.addAll(tempList);
                         qMessageList.add(new QMessage(null, null, null, QMessage.TYPE_BLANK));
-                        messageAdapter.notifyDataSetChanged();
+//                        messageAdapter.notifyDataSetChanged();
+                        messageAdapter.notifyItemRangeInserted(qMessageList.size() - (tempList.size() + 1), tempList.size() + 1);
                         messageBox.scrollToPosition(qMessageList.size() - 1);
 
                         //获取历史记录成功，也是连接成功的标志
                         Toast toast = ((SocketApp) getApplication()).getToast4();
                         toast.setText(R.string.get_success);
                         toast.show();
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.INVISIBLE);
                     });
 
                 }

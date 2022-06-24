@@ -6,7 +6,7 @@
     <string name="config_server_info">配置信息：</string>
     <string name="user_name">用户名</string>
     <string name="submit">确定</string>
-    <string name="message_input">信息</string>
+    <string name="message_input">输入消息</string>
     <string name="send_button">发送</string>
     <string name="app_about">关于</string>
     <string name="about_message_developer">客户端由I_Info开发，服务端由Node Sans开发</string>
