@@ -9,8 +9,8 @@
     <string name="message_input">输入消息</string>
     <string name="send_button">发送</string>
     <string name="app_about">关于</string>
-    <string name="about_message_developer">客户端由I_Info开发，服务端由Node Sans开发</string>
-    <string name="about_message_thank">特别感谢Sink君的安卓开发指导</string>
+    <string name="about_message_developer">客户开发：IInfo 服务端开发：Node Sans</string>
+    <string name="about_message_thank">特别感谢：Sink</string>
     <string name="error_conn_lost">连接已断开</string>
     <string name="error_conn_error">连接错误，请稍后尝试重新连接</string>
     <string name="error_invalid_msg">检测到无效信息</string>
