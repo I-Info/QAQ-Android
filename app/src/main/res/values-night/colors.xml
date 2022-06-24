@@ -6,4 +6,6 @@
     <color name="border">#222222</color>
     <color name="button_back">#393939</color>
     <color name="button_front">#ACACAC</color>
+    <color name="bubble_left_background">#605A7C</color>
+    <color name="bubble_right_background">#007FAC</color>
 </resources>

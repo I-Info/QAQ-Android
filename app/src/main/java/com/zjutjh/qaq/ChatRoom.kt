@@ -1,6 +1,5 @@
 package com.zjutjh.qaq
 
-import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -392,6 +391,7 @@ class ChatRoom : AppCompatActivity() {
             val msgBil = StringBuilder()
             val msg = messageLine.text.toString().trim { it <= ' ' }
             if (msg.isEmpty()) {
+                messageLine.setText("")
                 return
             }
             //消息长度限制
@@ -421,8 +421,8 @@ class ChatRoom : AppCompatActivity() {
                     }
                 }
             }.start()
-            @SuppressLint("SimpleDateFormat") val qMessage = QMessage(
-                username, SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
+            val qMessage = QMessage(
+                username, SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(
                     Date()
                 ), msg, QMessage.TYPE_RIGHT
             )

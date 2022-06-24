@@ -44,8 +44,4 @@ class MessageRecycleView : RecyclerView {
         return onTouchAction(this)
     }
 
-    interface OnTouchAction {
-        fun action(): Boolean
-    }
-
 }
