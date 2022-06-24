@@ -28,43 +28,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!--        <EditText-->
-        <!--            android:id="@+id/messageLine"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="10dp"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:autofillHints="messages"-->
-        <!--            android:ems="10"-->
-        <!--            android:hint="@string/message_input"-->
-        <!--            android:inputType="textShortMessage|textAutoCorrect|textMultiLine"-->
-        <!--            android:maxLines="3"-->
-        <!--            android:scrollbars="vertical" />-->
-
-        <!--        <ImageButton-->
-        <!--            android:id="@+id/sendButton"-->
-        <!--            android:layout_width="76dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="center_vertical"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:background="?attr/selectableItemBackgroundBorderless"-->
-        <!--            android:contentDescription="@string/send_button"-->
-        <!--            android:cropToPadding="false"-->
-        <!--            android:onClick="sendMessage"-->
-        <!--            android:scaleType="center"-->
-        <!--            android:translationX="-3dp"-->
-        <!--            app:srcCompat="@android:drawable/ic_menu_send"-->
-        <!--            tools:ignore="ImageContrastCheck" />-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/messageInputLayout"
+            style="?attr/textInputFilledStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?attr/textInputFilledStyle"
             android:hint="@string/message_input"
-            app:endIconDrawable="@drawable/ic_arrow_forward_24"
-            app:endIconMode="custom"
             app:endIconCheckable="true"
-            app:endIconContentDescription="@string/send_button">
+            app:endIconContentDescription="@string/send_button"
+            app:endIconDrawable="@drawable/ic_arrow_forward_24"
+            app:endIconMode="custom">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/messageInput"
