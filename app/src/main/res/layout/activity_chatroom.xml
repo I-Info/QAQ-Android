@@ -11,47 +11,38 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:overScrollMode="ifContentScrolls"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/messageInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintCircleRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/messageInputLayout"
-            style="?attr/textInputFilledStyle"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/messageInputLayout"
+        style="?attr/textInputFilledStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/message_input"
+        app:boxCornerRadiusTopEnd="15dp"
+        app:boxCornerRadiusTopStart="15dp"
+        app:endIconCheckable="true"
+        app:endIconContentDescription="@string/send_button"
+        app:endIconDrawable="@drawable/ic_arrow_forward_24"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/message_input"
-            app:boxCornerRadiusTopEnd="15dp"
-            app:boxCornerRadiusTopStart="15dp"
-            app:endIconCheckable="true"
-            app:endIconContentDescription="@string/send_button"
-            app:endIconDrawable="@drawable/ic_arrow_forward_24"
-            app:endIconMode="custom">
+            android:lineSpacingExtra="0.5dp"
+            android:maxLines="3"
+            android:minLines="1"
+            android:textSize="@dimen/sp_14" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/messageInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="0.5dp"
-                android:maxLines="3"
-                android:minLines="1"
-                android:textSize="@dimen/sp_14" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/scroll_button"
