@@ -16,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +23,7 @@ import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.io.BufferedReader
 import java.io.IOException
@@ -48,14 +48,13 @@ class ChatRoom : AppCompatActivity() {
     private var fabVisibility = false
     private var distance = 0
     private lateinit var messageBox: MessageRecycleView
-    private lateinit var messageLine: EditText
+    private lateinit var messageLine: TextInputEditText
     private lateinit var messageLayout: TextInputLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var toast: Toast
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
 
-    //    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatroom)
@@ -71,9 +70,12 @@ class ChatRoom : AppCompatActivity() {
             textInputLayout.setEndIconOnClickListener { sendMessage() }
         }
         messageLine.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                messageLayout.isEndIconVisible = messageLine.text.isNotEmpty()
+                messageLayout.isEndIconVisible =
+                    !(messageLine.text == null || messageLine.text!!.isEmpty())
             }
 
             override fun afterTextChanged(s: Editable) {}
@@ -389,21 +391,23 @@ class ChatRoom : AppCompatActivity() {
     private fun sendMessage() {
         if (socket != null && socket!!.isConnected) {
             val msgBil = StringBuilder()
-            val msg = messageLine.text.toString().trim { it <= ' ' }
-            if (msg.isEmpty()) {
-                messageLine.setText("")
+            val msg = messageLine.text
+            if (msg == null || msg.isBlank()) {
                 return
-            }
-            //消息长度限制
-            if (msg.length >= 500) {
+            } else if (msg.length >= 500) {
                 toast.setText(R.string.error_msg_too_long)
                 toast.show()
                 return
             }
-            messageLine.setText("")
+
+            msg.clear()
+
+            Log.d("InputBox", String.format("Set height: %s", messageLine.height))
+
             msgBil.append("{msg&;send&;")
             msgBil.append(
-                Base64.getEncoder().encodeToString(msg.toByteArray(StandardCharsets.UTF_8))
+                Base64.getEncoder()
+                    .encodeToString(msg.toString().toByteArray(StandardCharsets.UTF_8))
             )
             msgBil.append('}')
             //消息推送线程
@@ -424,7 +428,7 @@ class ChatRoom : AppCompatActivity() {
             val qMessage = QMessage(
                 username, SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(
                     Date()
-                ), msg, QMessage.TYPE_RIGHT
+                ), msg.toString(), QMessage.TYPE_RIGHT
             )
             var size = qMessageList.size
             qMessageList.add(size - 1, qMessage)

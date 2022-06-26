@@ -43,8 +43,10 @@
                 android:id="@+id/messageInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:maxLines="3" />
+                android:lineSpacingExtra="0.5dp"
+                android:maxLines="3"
+                android:minLines="1"
+                android:textSize="@dimen/sp_14" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -57,13 +59,13 @@
         android:foregroundGravity="center"
         android:onClick="scrollToBottom"
         android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/messageBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_min="1dp"
-        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.862" />
+        app:layout_constraintVertical_bias="0.917" />
 
     <ProgressBar
         android:id="@+id/loadingProgress"

@@ -11,7 +11,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_keyboard_arrow_down_24.xml" value="0.3057296752929688" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.485" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.8818023681640625" />
-        <entry key="app/src/main/res/layout/activity_chatroom.xml" value="0.5188834154351396" />
+        <entry key="app/src/main/res/layout/activity_chatroom.xml" value="0.75" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5233204968553354" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/bubble_message.xml" value="0.5901041666666667" />
