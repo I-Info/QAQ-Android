@@ -34,6 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/message_input"
+            app:boxCornerRadiusTopEnd="15dp"
+            app:boxCornerRadiusTopStart="15dp"
             app:endIconCheckable="true"
             app:endIconContentDescription="@string/send_button"
             app:endIconDrawable="@drawable/ic_arrow_forward_24"

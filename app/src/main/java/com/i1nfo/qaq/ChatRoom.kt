@@ -400,9 +400,7 @@ class ChatRoom : AppCompatActivity() {
                 return
             }
 
-            msg.clear()
-
-            Log.d("InputBox", String.format("Set height: %s", messageLine.height))
+            messageLine.text = null
 
             msgBil.append("{msg&;send&;")
             msgBil.append(
