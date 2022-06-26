@@ -1,4 +1,4 @@
-package com.zjutjh.qaq;
+package com.i1nfo.qaq;
 
 import static org.junit.Assert.assertEquals;
 

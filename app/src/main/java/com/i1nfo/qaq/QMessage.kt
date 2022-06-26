@@ -1,4 +1,4 @@
-package com.zjutjh.qaq
+package com.i1nfo.qaq
 
 class QMessage(val user: String?, val date: String?, val content: String?, val type: Int) {
     override fun toString(): String {

@@ -1,4 +1,4 @@
-package com.zjutjh.qaq
+package com.i1nfo.qaq
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -1,4 +1,4 @@
-package com.zjutjh.qaq
+package com.i1nfo.qaq
 
 import android.app.ActivityOptions
 import android.app.NotificationChannel
