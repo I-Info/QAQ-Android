@@ -12,12 +12,12 @@
     <string name="about_message_developer">Client developed by I_Info, Server developed by Node Sans</string>
     <string name="about_message_thank">Special thanks to Sink</string>
     <string name="about_message_git" translatable="false">https://github.com/I-Info/QAQ-Android</string>
-    <string name="error_conn_lost">Network connection lost</string>
+    <string name="error_conn_lost">Disconnected</string>
     <string name="error_conn_error">Connect error. Please try again latter.</string>
     <string name="error_invalid_msg">Detected invalid message</string>
     <string name="conn_success">Connected</string>
     <string name="error_conn_fail">Connect failed</string>
-    <string name="conn">Connecting…</string>
+    <string name="stat_conn">Connecting…</string>
     <string name="require_ip">Please input host name</string>
     <string name="require_port">Please input server port</string>
     <string name="invalid_user">Invalid username</string>
@@ -26,4 +26,8 @@
     <string name="to_bottom" translatable="false">to bottom</string>
     <string name="error_msg_too_long">message is too long :( [>500]</string>
     <string name="get_success">Get data success</string>
+    <string name="chatroom">Chatroom</string>
+    <string name="config">Config</string>
+    <string name="main_page">Main page</string>
+    <string name="conn">Connect</string>
 </resources>

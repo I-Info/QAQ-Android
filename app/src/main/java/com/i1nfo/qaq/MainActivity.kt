@@ -4,9 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.transition.Slide
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var usernameInput: TextInputEditText
     private lateinit var progressBar: ProgressBar
     private var thread: Thread? = null
-    private lateinit var toast: Toast
     private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +38,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //设置切换动画
-        val slideIn = Slide()
-        slideIn.slideEdge = Gravity.END
-        val slideOut = Slide()
-        slideOut.slideEdge = Gravity.START
-        window.enterTransition = slideIn
-        window.exitTransition = slideOut
+//        val slideIn = Slide()
+//        slideIn.slideEdge = Gravity.END
+//        val slideOut = Slide()
+//        slideOut.slideEdge = Gravity.START
+//        window.enterTransition = slideIn
+//        window.exitTransition = slideOut
 
         hostnameInput = findViewById(R.id.hostname)
         portInput = findViewById(R.id.port)
@@ -62,7 +59,6 @@ class MainActivity : AppCompatActivity() {
 
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.GONE
-        toast = (application as SocketApp).toast1
         preferences = getSharedPreferences(TAG, MODE_PRIVATE)
         if (savedInstanceState != null) {
             //从内存读取保存的配置信息
@@ -138,8 +134,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
         progressBar.visibility = View.VISIBLE
-        toast.setText(R.string.conn)
-        toast.show()
         thread = Thread {
             val socket = Socket()
             try {
@@ -165,17 +159,13 @@ class MainActivity : AppCompatActivity() {
             } catch (exception: UnknownHostException) {
                 exception.printStackTrace()
                 runOnUiThread {
-                    toast.cancel()
-                    hostnameInput.error = getString(R.string.invalid_server_name)
+                    hostnameLayout.error = getString(R.string.invalid_server_name)
                     progressBar.visibility = View.GONE
                 }
             } catch (exception: IOException) {
                 //连接失败
                 runOnUiThread {
-                    toast.cancel()
-                    val toast = (application as SocketApp).toast2
-                    toast.setText(R.string.error_conn_fail)
-                    toast.show()
+                    Toast.makeText(baseContext, R.string.error_conn_fail, Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
                 exception.printStackTrace()

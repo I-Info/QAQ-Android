@@ -49,7 +49,6 @@ class ChatRoom : AppCompatActivity() {
     private lateinit var messageLine: TextInputEditText
     private lateinit var messageLayout: TextInputLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var toast: Toast
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
 
@@ -67,7 +66,6 @@ class ChatRoom : AppCompatActivity() {
 
         scrollButton = findViewById(R.id.scroll_button)
         progressBar = findViewById(R.id.loadingProgress)
-        toast = (application as SocketApp).toast2
 
         //设置message box (RecyclerView)
         layoutManager = LinearLayoutManager(this)
@@ -132,7 +130,7 @@ class ChatRoom : AppCompatActivity() {
         )
         notificationManager.createNotificationChannel(notificationChannel)
         builder = NotificationCompat.Builder(this, "Default Channel")
-        Log.d("size", qMessageList.size.toString())
+        Log.d("MessageSize", qMessageList.size.toString())
     }
 
     override fun onStart() {
@@ -151,11 +149,6 @@ class ChatRoom : AppCompatActivity() {
 
                     //开始连接，连接超时时间3000ms
                     if (socket == null || !socket!!.isConnected) throw Exception("Connect error")
-                    runOnUiThread {
-                        (application as SocketApp).toast1.cancel()
-                        toast.setText(R.string.conn_success)
-                        toast.show()
-                    }
 
                     //初始化输入输出流对象
                     bufferedReader =
@@ -208,11 +201,7 @@ class ChatRoom : AppCompatActivity() {
                                     }
                                 } catch (exception: Exception) {
                                     //数据流处理中出现异常情况
-                                    runOnUiThread {
-                                        toast.setText("Caught invalid message pack :(")
-                                        toast.show()
-                                    }
-                                    exception.printStackTrace()
+                                    Log.e("Message", exception.toString())
                                 }
                             }
                             content = CharArray(1024) //清空
@@ -223,19 +212,20 @@ class ChatRoom : AppCompatActivity() {
                         socket!!.close()
                         (application as SocketApp).socket = null
                         runOnUiThread {
-                            val toast = (application as SocketApp).toast3
-                            toast.setText(R.string.error_conn_lost)
-                            toast.show()
+                            Toast.makeText(
+                                baseContext,
+                                R.string.error_conn_lost,
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
                     }
                 } catch (exception: Exception) {
                     //进入activity时socket连接已断开
-                    exception.printStackTrace()
+                    Log.e("QAQMessenger", exception.toString())
                     runOnUiThread {
-                        val toast = (application as SocketApp).toast3
-                        toast.setText(R.string.error_conn_error)
-                        toast.show()
+                        Toast.makeText(baseContext, R.string.error_conn_error, Toast.LENGTH_SHORT)
+                            .show()
                         finish()
                     }
                 }
@@ -244,7 +234,7 @@ class ChatRoom : AppCompatActivity() {
             private fun messageHandler(rawMessage: String) {
                 //处理已经解包后的接收到的消息
                 val messageArray = rawMessage.split("&;")
-                Log.d("Message", messageArray.toString())
+                Log.d("GetMessage", messageArray.toString())
                 if (messageArray[0] == "msg" && messageArray.size == 4) {
                     try {
                         val qMessage = QMessage(
@@ -295,16 +285,16 @@ class ChatRoom : AppCompatActivity() {
                             notificationManager.notify(1, builder.build())
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
-                        Log.d("raw", rawMessage)
+                        Log.e("QAQMessenger", e.toString())
                         runOnUiThread {
-                            val toast = (application as SocketApp).toast3
-                            toast.setText(R.string.error_invalid_msg)
-                            toast.show()
+                            Toast.makeText(
+                                baseContext,
+                                R.string.error_invalid_msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 } else if (messageArray[0] == "msghistory" && messageArray.size >= 4) {
-                    Log.d("Protocol", messageArray.toString())
                     val tempList: MutableList<QMessage> = ArrayList()
                     var index = 1
                     while (index < messageArray.size) {
@@ -341,13 +331,15 @@ class ChatRoom : AppCompatActivity() {
                                 }
                             tempList.add(qMessage)
                         } catch (e: Exception) {
-                            e.printStackTrace()
-                            Log.d("raw", rawMessage)
+                            Log.e("QAQMessenger", e.toString())
                             runOnUiThread {
-                                val toast = (application as SocketApp).toast3
-                                toast.setText(R.string.error_invalid_msg)
-                                toast.show()
+                                Toast.makeText(
+                                    baseContext,
+                                    R.string.error_invalid_msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+
                         }
                         index += 3
                     }
@@ -360,10 +352,6 @@ class ChatRoom : AppCompatActivity() {
                         )
                         messageBox.scrollToPosition(qMessageList.size - 1)
 
-                        //获取历史记录成功，也是连接成功的标志
-                        val toast = (application as SocketApp).toast4
-                        toast.setText(R.string.get_success)
-                        toast.show()
                         progressBar.visibility = View.INVISIBLE
                     }
                 }
@@ -380,8 +368,7 @@ class ChatRoom : AppCompatActivity() {
             if (msg == null || msg.isBlank()) {
                 return
             } else if (msg.length >= 500) {
-                toast.setText(R.string.error_msg_too_long)
-                toast.show()
+                Toast.makeText(baseContext, R.string.error_msg_too_long, Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -402,8 +389,8 @@ class ChatRoom : AppCompatActivity() {
                     //发送失败，说明已断开连接
                     exception.printStackTrace()
                     runOnUiThread {
-                        toast.setText(R.string.error_conn_lost)
-                        toast.show()
+                        Toast.makeText(baseContext, R.string.error_conn_lost, Toast.LENGTH_SHORT)
+                            .show()
                         finish()
                     }
                 }
@@ -423,11 +410,11 @@ class ChatRoom : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //重写返回按钮
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        }
+//        //重写返回按钮
+//        if (item.itemId == android.R.id.home) {
+//            finish()
+//            return true
+//        }
         if (item.itemId == R.id.item_about) {
             val intent = Intent(this, About::class.java)
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
@@ -457,7 +444,7 @@ class ChatRoom : AppCompatActivity() {
         try {
             socket!!.shutdownInput() //关闭输入流来关闭socket服务线程
         } catch (exception: Exception) {
-            exception.printStackTrace()
+            Log.e("OnDestroy", exception.toString())
         }
     }
 }

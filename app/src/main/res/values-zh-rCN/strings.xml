@@ -16,7 +16,7 @@
     <string name="error_invalid_msg">检测到无效信息</string>
     <string name="conn_success">连接成功</string>
     <string name="error_conn_fail">连接失败</string>
-    <string name="conn">连接中..</string>
+    <string name="stat_conn">连接中..</string>
     <string name="require_ip">请输入主机名</string>
     <string name="require_port">请输入服务器端口</string>
     <string name="invalid_user">用户名无效</string>
@@ -24,4 +24,8 @@
     <string name="invalid_port">端口号无效</string>
     <string name="error_msg_too_long">消息过长 :( [>500]</string>
     <string name="get_success">获取消息成功</string>
+    <string name="chatroom">聊天室</string>
+    <string name="config">配置</string>
+    <string name="main_page">主页</string>
+    <string name="conn">连接</string>
 </resources>

@@ -12,20 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QAQAndroid">
-        <activity android:name=".About" />
+        <activity
+            android:name=".About"
+            android:label="@string/app_about" />
         <activity
             android:name=".ChatRoom"
             android:configChanges="keyboardHidden"
-            android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.i1nfo.qaq.MainActivity" />
-        </activity>
+            android:label="@string/chatroom"
+            android:launchMode="singleTask" />
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/config">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
