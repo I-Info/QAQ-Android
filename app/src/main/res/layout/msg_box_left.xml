@@ -41,6 +41,7 @@
             android:autoLink="web"
             android:background="@drawable/bubble_left_tail"
             android:backgroundTint="@color/bubble_left_background"
+            android:ellipsize="end"
             android:maxWidth="300dp"
             android:paddingStart="15dp"
             android:paddingTop="8dp"

@@ -27,7 +27,6 @@
         android:hint="@string/message_input"
         app:boxCornerRadiusTopEnd="15dp"
         app:boxCornerRadiusTopStart="15dp"
-        app:endIconCheckable="true"
         app:endIconContentDescription="@string/send_button"
         app:endIconDrawable="@drawable/ic_arrow_forward_24"
         app:endIconMode="clear_text"
@@ -37,10 +36,8 @@
             android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="0.5dp"
             android:maxLines="3"
-            android:minLines="1"
-            android:textSize="@dimen/sp_14" />
+            android:minLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
