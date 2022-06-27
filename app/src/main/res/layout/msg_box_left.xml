@@ -43,11 +43,11 @@
             android:backgroundTint="@color/bubble_left_background"
             android:ellipsize="end"
             android:maxWidth="300dp"
+            android:minWidth="30dp"
             android:paddingStart="15dp"
             android:paddingTop="8dp"
             android:paddingEnd="10dp"
             android:paddingBottom="10dp"
-            android:text="some text"
             android:textIsSelectable="true" />
 
     </LinearLayout>

@@ -44,11 +44,11 @@
             android:backgroundTint="@color/bubble_right_background"
             android:ellipsize="end"
             android:maxWidth="300dp"
+            android:minWidth="30dp"
             android:paddingStart="10dp"
             android:paddingTop="8dp"
             android:paddingEnd="15dp"
             android:paddingBottom="10dp"
-            android:text="some text"
             android:textColor="@color/white"
             android:textIsSelectable="true" />
 
