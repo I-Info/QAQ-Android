@@ -23,8 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/config">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
