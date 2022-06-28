@@ -30,7 +30,9 @@
         app:endIconContentDescription="@string/send_button"
         app:endIconDrawable="@drawable/ic_arrow_forward_24"
         app:endIconMode="clear_text"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/messageInput"

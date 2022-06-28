@@ -17,5 +17,5 @@
     <color name="onBackground">#FFFFFF</color>
     <color name="chatBackground">#F0F0F0</color>
     <color name="bubble_left_background">#E6E5EC</color>
-    <color name="bubble_right_background">#03A9F4</color>
+    <color name="bubble_right_background">#E8DEF8</color>
 </resources>
